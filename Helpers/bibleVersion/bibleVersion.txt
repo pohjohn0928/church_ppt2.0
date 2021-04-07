@@ -1,0 +1,18 @@
+NIV,New International Version
+ESV,English Standard Version
+KJV,King James Version
+AMP,Amplified Bible
+ASV,American Standard Version
+NKJV,New King James Version
+NLT,New Living Translation
+CSBS,Chinese Standard Bible
+CSBT,Chinese Standard Bible Traditional
+RCUV,Revised Chinese Union Version
+AB,ALIVE
+KRV,Korean Revised Version
+FRDBY,Bible Darby en francais
+TLAB,Ang Biblia
+DHH941,Biblia Dios Habla Hoy
+DB1885,Diodati Bibbia 1885
+NET,New English Translation
+NIRV,New International Reader's Version
