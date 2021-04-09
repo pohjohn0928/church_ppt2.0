@@ -20,6 +20,15 @@ if __name__ == '__main__':
             "englishScrpitureInSermon": englishScrpitureInSermon, "chineseScrpitureInSermon": chineseScrpitureInSermon,
             "sermonTitle": sermonTitle, "date": date,"closingSongName" : closingSongName,"closingSong" : closingSong ,"blessing_song": blessing_song}
 
+    # data['englishScrpitureReading'] = {'verses': ['Mark 15:6-12', 'John 1:29', 'Isaiah 53:7'], 'bibleVersion': ['NKJV', 'NKJV', 'NKJV']}
+    # chineseScrpitureReading = ['馬可福音 15:6-12', '約翰福音 1:29', '以賽亞書 53:7']
+    # englishScrpitureInSermon = {'verses': [],'bibleVersion': []}
+    # chineseScrpitureInSermon = []
 
-    makePPT = MakePPT(data)
-    makePPT.insertScriptureData()
+    if len(englishScrpitureReading["verses"]) != len(chineseScrpitureReading):
+        print("Error")
+    elif len(englishScrpitureInSermon["verses"]) != len(chineseScrpitureInSermon):
+        print("Error")
+    else:
+        makePPT = MakePPT(data)
+        makePPT.insertScriptureData()

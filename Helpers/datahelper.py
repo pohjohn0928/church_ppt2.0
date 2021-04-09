@@ -157,6 +157,7 @@ class BibleApi:
         startVerse = int(startVerse)
         endVerse = int(endVerse)
         return_verses = []
+        book = book.replace(' ','-')
         response = requests.get(f"https://www.biblestudytools.com/{bibleVersion}/{book}/{chapter}.html")
         soup = BeautifulSoup(response.text, "html.parser")
 

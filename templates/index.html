@@ -27,10 +27,16 @@
                 },
                 type : 'post',
                 success : function (result) {
-                    swal("Finish", result, "success").then(() =>
-                    {
-                        location.reload()
-                    })
+                    console.log(result)
+                    if(result == 'Error'){
+                        swal("Error", '', "error")
+                    }
+                    else{
+                        swal("Finish", result, "success").then(() =>
+                        {
+                            location.reload()
+                        })
+                    }
                 }
              })
         }
@@ -41,7 +47,19 @@
            })
         }
   }
-
+    function selectAll(obj,cName){
+        var ele = document.getElementsByClassName('annoncement_check');
+        for(var i=0; i < ele.length; i++){
+            if(ele[i].type=='checkbox'){
+                if(ele[i].checked == false){
+                    ele[i].checked = true;
+                }
+                else if(ele[i].checked == true){
+                    ele[i].checked = false;
+                }
+            }
+        }
+    }
 
 
 </script>
@@ -67,6 +85,8 @@
 <input type="checkbox" value="Calvary Ushers and Greeters Group" class="annoncement_check"/>Calvary Ushers and Greeters Group<br>
 <input type="checkbox" value="Questions about How to Give and Church Finances" class="annoncement_check"/>Questions about How to Give and Church Finances<br>
 <input type="checkbox" value="Thursday Night Bible Study with Stephen Cha Fellowship Hall" class="annoncement_check"/>Thursday Night Bible Study with Stephen Cha Fellowship Hall<br>
+<button onclick="selectAll()">Select All</button><br>
+
 
 Sermon Title : <br><textarea class="form-control" id="sermon_title" rows="10" cols="35"
                              required="required"></textarea><br>

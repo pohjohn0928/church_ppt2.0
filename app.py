@@ -23,22 +23,24 @@ def getPdfFile():
     chineseScrpitureReading = readPdfFile.getChineseScrpitureReading()
     englishScrpitureInSermon = readPdfFile.getEnglishScrpitureInSermon()
     chineseScrpitureInSermon = readPdfFile.getChineseScrpitureInSermon()
+
     closingSong = readPdfFile.getClosingSong(closingSongName)
     blessing_song = readPdfFile.getBlessingSong()
     date = filename.split(" ")[2].split('.')[0]
+
     data = {"annocement": annocement, "englishScrpitureReading": englishScrpitureReading,
             "chineseScrpitureReading": chineseScrpitureReading, "englishScrpitureInSermon": englishScrpitureInSermon,
             "chineseScrpitureInSermon": chineseScrpitureInSermon, "sermonTitle": sermonTitle, "date": date,
             "closingSongName": closingSongName, "closingSong": closingSong, "blessing_song": blessing_song}
 
     if len(englishScrpitureReading["verses"]) != len(chineseScrpitureReading):
-        print("Error")
+        return 'Error'
     elif len(englishScrpitureInSermon["verses"]) != len(chineseScrpitureInSermon):
-        print("Error")
-    # else:
-    #     makePPT = MakePPT(data)
-    #     makePPT.insertScriptureData()
-    #     return f"PPT Path : {os.path.dirname(__file__)}"
+        return 'Error'
+    else:
+        makePPT = MakePPT(data)
+        makePPT.insertScriptureData()
+        return f"PPT Path : {os.path.dirname(__file__)}"
 
 
 if __name__ == '__main__':
