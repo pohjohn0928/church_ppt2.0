@@ -5,7 +5,6 @@ from pptx.dml.color import RGBColor
 import requests
 from bs4 import BeautifulSoup
 from tika import parser
-import pandas as pd
 
 class ReadPdfFile:
     def __init__(self, filename):
@@ -59,33 +58,30 @@ class ReadPdfFile:
         data = self.data.split(splitWord1)[1].split(splitWord2)[0]
         versesDic = {"verses" : [],"bibleVersion" : []}
         verses = []
-        for info in data.split("\n"):
-            for key in englishBookDic.keys():
-                if key in info:
-                    otherVersion = 0
-                    for keys in bibleVersionDic.keys():
-                        if keys in info:
-                            verses.append(info.rstrip())
-                            otherVersion = 1
-                    if "(See Scripture Reading)" in info:
-                        verses.append(info.split("(See Scripture Reading)")[0].rstrip())
-                    elif len(info.rstrip()) < 25 and otherVersion == 0:
-                        verses.append(info.rstrip())
 
-        verses = pd.unique(verses)
-        for verse in verses:
-            hit = 0
-            for key in bibleVersionDic.keys():
-                if key in verse:
-                    hit = 1
-                    versesDic["verses"].append(verse.replace(f"({key})","").rstrip())
-                    versesDic["bibleVersion"].append(key)
-                    break
-            if hit == 0:
-                versesDic["verses"].append(verse)
-                versesDic["bibleVersion"].append("NKJV")
 
-        return versesDic
+        return_scripture = ' '.join(data.replace('\n','').split(' ')).split()
+        del return_scripture[0:3]
+        englishScrpitureInSermon = {'verses' : [] , 'bibleVersion' : []}
+        for index,s in enumerate(return_scripture):
+            scripture = ''
+            if s in englishBookDic.keys():
+                scripture = s + ' ' + return_scripture[index+1]
+            if s.replace('(','').replace(')','') in bibleVersionDic.keys():
+                scripture = return_scripture[index-2] + ' ' + return_scripture[index - 1] + ' ' + s
+            if scripture != '':
+                if len(scripture.split(' ')) == 3:
+                    del englishScrpitureInSermon["verses"][-1]
+                    version = scripture.split(' ')[-1].replace('(','').replace(')','')
+                    englishScrpitureInSermon["bibleVersion"].append(version)
+                    scripture = scripture.split(' ')
+                    scripture = scripture[0] + ' ' + scripture[1]
+                else:
+                    englishScrpitureInSermon["bibleVersion"].append('NKJV')
+                englishScrpitureInSermon["verses"].append(scripture)
+
+        return englishScrpitureInSermon
+
 
     def getChineseScrpitureInSermon(self):
         chineseBookDic = BibleApi().chineseBookDic
@@ -96,10 +92,9 @@ class ReadPdfFile:
         for info in data.split("\n"):
             for key in chineseBookDic.keys():
                 if key in info:
-                    if "(詳見今日經文)" in info:
-                        verses.append(info.split(" ")[0] + " " + info.split(" ")[1])
-                    elif len(info.rstrip()) < 14:
-                        verses.append(info.rstrip())
+                    scripture = ' '.join(info.split(' ')).split()
+                    scripture = scripture[-2] + ' ' + scripture[-1]
+                    verses.append(scripture)
         return verses
 
     def getClosingSong(self,closingSongName):
@@ -137,21 +132,6 @@ class BibleApi:
         self.setChineseBook()
         self.englishVerseBaseUrl = "https://biblia-api-pdf.herokuapp.com/api?method=bible&"
         self.chineseVerseBaseUrl = "http://ibibles.net/quote.php?cut-"
-
-    # def getEnglishVerse(self,bibleVersion,book,chapter,startVerse,endVerse):
-    #     url = self.englishVerseBaseUrl + f"version={bibleVersion}&book={book}&cStart={chapter}&cEnd={chapter}&vStart={startVerse}&vEnd={endVerse}"
-    #     r = requests.get(url)
-    #     print(url)
-    #     verses = r.json()["content"][0]["verses"]
-    #     return_verses = []
-    #     startVerse = int(startVerse)
-    #     endVerse = int(endVerse)
-    #     for verse in verses:
-    #         content = verses[f"v{startVerse}"]
-    #         content = f"<start_verse>{startVerse} " + content
-    #         return_verses.append(content)
-    #         startVerse += 1
-    #     return return_verses
 
     def getEnglishVerse(self,bibleVersion,book,chapter,startVerse,endVerse):
         startVerse = int(startVerse)
@@ -204,7 +184,7 @@ class MakePPT:
         self.prs.slide_width = Inches(16)
         self.prs.slide_height = Inches(9)
         self.data = data
-        self.word_limit = 68
+        self.word_limit = 69
         self.word_limit_chinese = 155
         self.layout = self.prs.slide_layouts[6]
         self.start_verse_token = "<start_verse>"
