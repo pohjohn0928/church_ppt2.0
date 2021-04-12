@@ -11,3 +11,4 @@
   - requests
   - bs4
   - tika
+  - python-docx

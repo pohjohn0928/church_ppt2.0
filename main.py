@@ -1,8 +1,10 @@
-# coding=utf-8
+# coding = utf-8
 from Helpers.datahelper import ReadPdfFile, MakePPT
-
+from Helpers.email import Gmail
+from Helpers.docx import Word
+import os
 if __name__ == '__main__':
-    filename = "Calvary Bulletin 20210307.pdf"
+    filename = "Calvary Bulletin 20210411.pdf"
     sermonTitle = 'Afraid? Fearful? Enter the Kingdom of God!'
     closingSongName = 'Amazing Grace - 奇異恩典'  # ref name : Helper/closingSong
 
@@ -33,9 +35,18 @@ if __name__ == '__main__':
             "blessing_song": blessing_song}
 
     if len(englishScrpitureReading["verses"]) != len(chineseScrpitureReading):
-        print("Error")
+        print("englishScrpitureReading != chineseScrpitureReading")
     elif len(englishScrpitureInSermon["verses"]) != len(chineseScrpitureInSermon):
-        print("Error")
+        print("englishScrpitureInSermon != chineseScrpitureInSermon")
     else:
+        word = Word(data)
+
         makePPT = MakePPT(data)
         makePPT.insertScriptureData()
+
+        path = os.path.join(os.path.dirname(__file__), 'Helpers/receiver/receiver.txt')
+        file = open(path)
+        for f in file:
+            receiver = f.replace('\n', '').strip()
+            gmail = Gmail()
+            gmail.send(receiver,f'Scripture for {data["date"]}',f'churchPPT{data["date"]}.pptx',data["sermonTitle"])
