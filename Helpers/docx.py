@@ -1,8 +1,10 @@
 from docx import Document
 from docx.shared import Inches,Pt,RGBColor
 from Helpers.datahelper import MakePPT
-class Word:
+import threading
+class Word(threading.Thread):   #threading.Thread
     def __init__(self,data):
+        threading.Thread.__init__(self)
         self.document = Document()
         date = data["date"][0:4] + '/' + data["date"][4:6] + '/' + data["date"][6:8]
         self.document.add_heading(f'Scripture for {date}', 0)
