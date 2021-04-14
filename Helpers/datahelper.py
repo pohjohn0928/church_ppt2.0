@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 from tika import parser
 import time
+import threading
 
 class ReadPdfFile:
     def __init__(self, filename):
@@ -179,8 +180,9 @@ class BibleApi:
             self.chineseBookDic[book.replace("\n","").split(" ")[1]] = book.replace("\n","").split(" ")[0]
 
 
-class MakePPT:
+class MakePPT(threading.Thread):
     def __init__(self, data):
+        threading.Thread.__init__(self)
         self.prs = Presentation()
         self.prs.slide_width = Inches(16)
         self.prs.slide_height = Inches(9)
@@ -189,6 +191,9 @@ class MakePPT:
         self.word_limit_chinese = 155
         self.layout = self.prs.slide_layouts[6]
         self.start_verse_token = "<start_verse>"
+
+    def run(self):
+        self.insertScriptureData()
 
     def insertScriptureData(self):
         start = time.time()

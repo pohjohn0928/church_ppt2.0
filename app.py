@@ -42,10 +42,17 @@ def getPdfFile():
     elif len(englishScrpitureInSermon["verses"]) != len(chineseScrpitureInSermon):
         return 'Error'
     else:
-        Word(data)
+        start = time.time()
+        threads = []
+        threads.append(MakePPT(data))
+        threads[0].start()
+        threads.append(Word(data))
+        threads[1].start()
 
-        makePPT = MakePPT(data)
-        makePPT.insertScriptureData()
+        for t in threads:
+            t.join()
+        end = time.time()
+        print(f'total cost for ppt and docx : {end - start} sec')
 
         path = os.path.join(os.path.dirname(__file__), 'Helpers/receiver/receiver.txt')
         file = open(path)
