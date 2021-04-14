@@ -27,7 +27,7 @@ class Gmail:
             self.smtp.login(self.sender, self.token)
             self.smtp.sendmail(self.sender, receiver, self.content.as_string())
             self.smtp.close()
-            print('Mail Sent')
+            print(f'Mail Sent to \'{receiver}\'')
         except Exception as e:
             print("Error message: ", e)
 

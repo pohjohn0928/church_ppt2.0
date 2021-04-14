@@ -1,10 +1,11 @@
 from docx import Document
 from docx.shared import Inches,Pt,RGBColor
 from Helpers.datahelper import MakePPT
-import threading
-class Word(threading.Thread):   #threading.Thread
+import time
+
+class Word():   #threading.Thread
     def __init__(self,data):
-        threading.Thread.__init__(self)
+        start = time.time()
         self.document = Document()
         date = data["date"][0:4] + '/' + data["date"][4:6] + '/' + data["date"][6:8]
         self.document.add_heading(f'Scripture for {date}', 0)
@@ -20,9 +21,11 @@ class Word(threading.Thread):   #threading.Thread
             self.setTitle(scrpiture, 'chinese')
             self.setVerse(verse, 'chinese')
         self.document.save('Scripture_In_Sermon.docx')
+        end = time.time()
+        print("Make docx cost：%f sec" % (end - start))
 
-    def addPage(self):
-        self.document.add_page_break()
+    # def addPage(self):
+    #     self.document.add_page_break()
 
     def setTitle(self,Scipture,language = 'english'):
         p = self.document.add_paragraph()

@@ -5,6 +5,7 @@ from pptx.dml.color import RGBColor
 import requests
 from bs4 import BeautifulSoup
 from tika import parser
+import time
 
 class ReadPdfFile:
     def __init__(self, filename):
@@ -190,6 +191,7 @@ class MakePPT:
         self.start_verse_token = "<start_verse>"
 
     def insertScriptureData(self):
+        start = time.time()
         englishScrpitureReading = self.data["englishScrpitureReading"]
         chineseScrpitureReading = self.data["chineseScrpitureReading"]
         englishScrpitureInSermon = self.data["englishScrpitureInSermon"]
@@ -206,6 +208,9 @@ class MakePPT:
         self.addBlessingSong()
         self.addCalvaryImg()
         self.prs.save(f'churchPPT{self.data["date"]}.pptx')
+        end = time.time()
+        print("Make PPT cost：%f sec" % (end - start))
+
 
     def addAnnocement(self):
         if self.data['annocement'] == []:
