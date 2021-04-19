@@ -1,67 +1,67 @@
-0 GEN Genesis
-1 EXO Exodus
-2 LEV Leviticus
-3 NUM Numbers
-4 DEU Deuteronomy
-5 JOS Joshua
-6 JDG Judges
-7 RUT Ruth
-8 1SA 1 Samuel
-9 2SA 2 Samuel
-10 1KI 1 Kings
-11 2KI 2 Kings
-12 1CH 1 Chronicles
-13 2CH 2 Chronicles
-14 EZR Ezra
-15 NEH Nehemiah
-16 EST Esther
-17 JOB Job
-18 PSA Psalms
-19 PRO Proverbs
-20 ECC Ecclesiastes
-21 SNG Song of Songs
-22 ISA Isaiah
-23 JER Jeremiah
-24 LAM Lamentations
-25 EZK Ezekiel
-26 DAN Daniel
-27 HOS Hosea
-28 JOL Joel
-29 AMO Amos
-30 OBA Obadiah
-31 JON Jonah
-32 MIC Micah
-33 NAM Nahum
-34 HAB Habakkuk
-35 ZEP Zephaniah
-36 HAG Haggai
-37 ZEC Zechariah
-38 MAL Malachi
-39 MAT Matthew
-40 MRK Mark
-41 LUK Luke
-42 JHN John
-43 ACT Acts
-44 ROM Romans
-45 1CO 1 Corinthians
-46 2CO 2 Corinthians
-47 GAL Galatians
-48 EPH Ephesians
-49 PHP Philippians
-50 COL Colossians
-51 1TH 1 Thessalonians
-52 2TH 2 Thessalonians
-53 1TH 1 Timothy
-54 2TH 2 Timothy
-55 TIT Titus
-56 PHM Philemon
-57 HEB Hebrews
-58 JAS James
-59 1PE 1 Peter
-60 2PE 2 Peter
-61 1JN 1 John
-62 2JN 2 John
-63 3JN 3 John
-64 JUD Jude
-65 REV Revelation
-66 PSA Psalm
+0 Genesis Genesis
+1 Exodus Exodus
+2 Leviticus Leviticus
+3 Numbers Numbers
+4 Deuteronomy Deuteronomy
+5 Joshua Joshua
+6 Judges Judges
+7 Ruth Ruth
+8 1-Samuel 1-Samuel
+9 2-Samuel 2-Samuel
+10 1-Kings 1-Kings
+11 2-Kings 2-Kings
+12 1-Chronicles 1-Chronicles
+13 2-Chronicles 2-Chronicles
+14 Ezra Ezra
+15 Nehemiah Nehemiah
+16 Esther Esther
+17 Job Job
+18 Psalms Psalms
+19 Proverbs Proverbs
+20 Ecclesiastes Ecclesiastes
+21 Song-of-Songs Song-of-Songs
+22 Isaiah Isaiah
+23 Jeremiah Jeremiah
+24 Lamentations Lamentations
+25 Ezekiel Ezekiel
+26 Daniel Daniel
+27 Hosea Hosea
+28 Joel Joel
+29 Amos Amos
+30 Obadiah Obadiah
+31 Jonah Jonah
+32 Micah Micah
+33 Nahum Nahum
+34 Habakkuk Habakkuk
+35 Zephaniah Zephaniah
+36 Haggai Haggai
+37 Zechariah Zechariah
+38 Malachi Malachi
+39 Matthew Matthew
+40 Mark Mark
+41 Luke Luke
+42 John John
+43 Acts Acts
+44 Romans Romans
+45 1-Corinthians 1-Corinthians
+46 2-Corinthians 2-Corinthians
+47 Galatians Galatians
+48 Ephesians Ephesians
+49 Philippians Philippians
+50 Colossians Colossians
+51 1-Thessalonians 1-Thessalonians
+52 2-Thessalonians 2-Thessalonians
+53 1-Timothy 1-Timothy
+54 2-Timothy 2-Timothy
+55 Titus Titus
+56 Philemon Philemon
+57 Hebrews Hebrews
+58 James James
+59 1-Peter 1-Peter
+60 2-Peter 2-Peter
+61 1-John 1-John
+62 2-John 2-John
+63 3-John 3-John
+64 Jude Jude
+65 Revelation Revelation
+66 Psalm Psalm

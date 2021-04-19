@@ -44,26 +44,28 @@ def getPdfFile():
     else:
         start = time.time()
         threads = []
-        threads.append(MakePPT(data))
+        threads.append(MakePPT(data))   # make ppt
         threads[0].start()
-        threads.append(Word(data))
-        threads[1].start()
+        threads.append(Word(data))      # make word
+        threads[-1].start()
 
         for t in threads:
             t.join()
         end = time.time()
         print(f'total cost for ppt and docx : {end - start} sec')
 
+        #Send Email
+        start = time.time()
         path = os.path.join(os.path.dirname(__file__), 'Helpers/receiver/receiver.txt')
         file = open(path)
-
-        start = time.time()
         for f in file:
             receiver = f.replace('\n', '').strip()
             gmail = Gmail()
             gmail.send(receiver, f'Scripture for {data["date"]}', f'churchPPT{data["date"]}.pptx', data["sermonTitle"])
             end = time.time()
         print("Send Mail cost：%f sec" % (end - start))
+
+        # Done
         return f"PPT Path : {os.path.dirname(__file__)}"
 
 

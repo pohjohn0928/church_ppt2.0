@@ -60,8 +60,6 @@ class ReadPdfFile:
         data = self.data.split(splitWord1)[1].split(splitWord2)[0]
         versesDic = {"verses" : [],"bibleVersion" : []}
         verses = []
-
-
         return_scripture = ' '.join(data.replace('\n','').split(' ')).split()
         del return_scripture[0:3]
         englishScrpitureInSermon = {'verses' : [] , 'bibleVersion' : []}
@@ -71,6 +69,8 @@ class ReadPdfFile:
                 scripture = s + ' ' + return_scripture[index+1]
             if s.replace('(','').replace(')','') in bibleVersionDic.keys():
                 scripture = return_scripture[index-2] + ' ' + return_scripture[index - 1] + ' ' + s
+            if len(s) == 1:
+                scripture = return_scripture[index] + '-' + return_scripture[index+1] + ' ' + return_scripture[index + 2]
             if scripture != '':
                 if len(scripture.split(' ')) == 3:
                     del englishScrpitureInSermon["verses"][-1]
@@ -81,7 +81,6 @@ class ReadPdfFile:
                 else:
                     englishScrpitureInSermon["bibleVersion"].append('NKJV')
                 englishScrpitureInSermon["verses"].append(scripture)
-
         return englishScrpitureInSermon
 
 
@@ -145,7 +144,7 @@ class BibleApi:
 
         for i in range(startVerse,endVerse + 1):
             result = soup.find("span", class_=f"verse-{i}")
-            return_verses.append(f"<start_verse>{i} {result.text.strip()}")
+            return_verses.append(f"<sv>{i} {result.text.strip()}")
         return return_verses
 
 
@@ -154,7 +153,7 @@ class BibleApi:
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
         return_verses = soup.find('body').get_text().split('\n')
-        return_verses = ["<start_verse>" + verse for verse in return_verses if verse != ""]
+        return_verses = ["<sv>" + verse for verse in return_verses if verse != ""]
         # return_verses = [" ".join(verse.split(" ")[1:]) for verse in return_verses if verse != ""]
 
         return return_verses
@@ -190,7 +189,7 @@ class MakePPT(threading.Thread):
         self.word_limit = 69
         self.word_limit_chinese = 155
         self.layout = self.prs.slide_layouts[6]
-        self.start_verse_token = "<start_verse>"
+        self.start_verse_token = "<sv>"
 
     def run(self):
         self.insertScriptureData()

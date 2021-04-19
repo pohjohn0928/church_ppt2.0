@@ -44,7 +44,7 @@ class Word(threading.Thread):   #threading.Thread
     def setVerse(self,verse,language = 'english'):
         p = self.document.add_paragraph()
         for v in verse:
-            v = v.replace('<start_verse>','')
+            v = v.replace('<sv>','')
             run = p.add_run()
             run.text = v
             font = run.font
