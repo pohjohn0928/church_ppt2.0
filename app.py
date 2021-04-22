@@ -37,10 +37,12 @@ def getPdfFile():
             "chineseScrpitureInSermon": chineseScrpitureInSermon, "sermonTitle": sermonTitle, "date": date,
             "closingSongName": closingSongName, "closingSong": closingSong, "blessing_song": blessing_song}
 
+
     if len(englishScrpitureReading["verses"]) != len(chineseScrpitureReading):
         return 'Error'
     elif len(englishScrpitureInSermon["verses"]) != len(chineseScrpitureInSermon):
         return 'Error'
+
     else:
         start = time.time()
         threads = []
@@ -67,8 +69,6 @@ def getPdfFile():
 
         # Done
         return f"PPT Path : {os.path.dirname(__file__)}"
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)

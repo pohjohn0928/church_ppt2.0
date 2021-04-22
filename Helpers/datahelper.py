@@ -67,9 +67,10 @@ class ReadPdfFile:
             scripture = ''
             if s in englishBookDic.keys():
                 scripture = s + ' ' + return_scripture[index+1]
-            if s.replace('(','').replace(')','') in bibleVersionDic.keys():
+            elif s.replace('(','').replace(')','') in bibleVersionDic.keys():
+                del englishScrpitureInSermon['bibleVersion'][-1]
                 scripture = return_scripture[index-2] + ' ' + return_scripture[index - 1] + ' ' + s
-            if len(s) == 1:
+            elif len(s) == 1:
                 scripture = return_scripture[index] + '-' + return_scripture[index+1] + ' ' + return_scripture[index + 2]
             if scripture != '':
                 if len(scripture.split(' ')) == 3:
@@ -139,11 +140,17 @@ class BibleApi:
         endVerse = int(endVerse)
         return_verses = []
         book = book.replace(' ','-')
-        response = requests.get(f"https://www.biblestudytools.com/{bibleVersion}/{book}/{chapter}.html")
+        url = f"https://www.biblestudytools.com/{bibleVersion}/{book}/{chapter}.html"
+        response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
 
         for i in range(startVerse,endVerse + 1):
-            result = soup.find("span", class_=f"verse-{i}")
+            result = soup.find("span",class_=f"verse-{i}")
+            try:
+                while(1):
+                    result.a.decompose()
+            except:
+                pass
             return_verses.append(f"<sv>{i} {result.text.strip()}")
         return return_verses
 
@@ -244,6 +251,8 @@ class MakePPT(threading.Thread):
                 scripture = info["verses"][index]
                 bibleVersion = info["bibleVersion"][index]
                 verses = self.getEnglishBibleVerses(scripture,bibleVersion)
+                if bibleVersion != 'NKJV':
+                    scripture += ' ' + f"({bibleVersion})"
                 self.addPage(scripture,verses)
         else:
             for scripture in info:
@@ -279,7 +288,10 @@ class MakePPT(threading.Thread):
         for i in range(len(englishScrpitureInSermon["verses"])):
             slide = self.prs.slides.add_slide(self.layout)
             tf = self.initTxBox(slide)
-            self.setChapter(tf,englishScrpitureInSermon["verses"][i])
+            chapter = englishScrpitureInSermon["verses"][i]
+            if englishScrpitureInSermon['bibleVersion'][i] != 'NKJV':
+                chapter += ' ' + f"({englishScrpitureInSermon['bibleVersion'][i]})"
+            self.setChapter(tf,chapter)
             pageContent = self.seperateVerse(englishVerses[i])
             p = tf.add_paragraph()
             run = p.add_run()

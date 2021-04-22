@@ -7,9 +7,10 @@ import time
 if __name__ == '__main__':
     filename = "Calvary Bulletin 20210418.pdf"
     sermonTitle = 'Afraid? Fearful? Enter the Kingdom of God!'
-    closingSongName = 'Amazing Grace - 奇異恩典'  # ref name : Helper/closingSong
+    closingSongName = 'Just As I AM - 照我本相'  # ref name : Helper/closingSong
 
     readPdfFile = ReadPdfFile(filename)
+
 
     englishScrpitureReading = readPdfFile.getEnglishScrpitureReading()
     chineseScrpitureReading = readPdfFile.getChineseScrpitureReading()
@@ -43,12 +44,12 @@ if __name__ == '__main__':
         end = time.time()
         print(f'total cost for ppt and docx : {end - start} sec')
 
-    #     start = time.time()
-    #     path = os.path.join(os.path.dirname(__file__), 'Helpers/receiver/receiver.txt')
-    #     file = open(path)
-    #     for f in file:
-    #         receiver = f.replace('\n', '').strip()
-    #         gmail = Gmail()
-    #         gmail.send(receiver,f'Scripture for {data["date"]}',f'churchPPT{data["date"]}.pptx',data["sermonTitle"])
-    #     end = time.time()
-    #     print("Send mail cost：%f sec" % (end - start))
+        # start = time.time()
+        # path = os.path.join(os.path.dirname(__file__), 'Helpers/receiver/receiver.txt')
+        # file = open(path)
+        # for f in file:
+        #     receiver = f.replace('\n', '').strip()
+        #     gmail = Gmail()
+        #     gmail.send(receiver,f'Scripture for {data["date"]}',f'churchPPT{data["date"]}.pptx',data["sermonTitle"])
+        # end = time.time()
+        # print("Send mail cost：%f sec" % (end - start))

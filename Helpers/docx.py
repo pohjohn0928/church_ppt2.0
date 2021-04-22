@@ -18,6 +18,9 @@ class Word(threading.Thread):   #threading.Thread
             scrpiture = self.data["englishScrpitureInSermon"]["verses"][index]
             bible_version = self.data["englishScrpitureInSermon"]["bibleVersion"][index]
             verse = MakePPT(self.data).getEnglishBibleVerses(scrpiture, bible_version)
+
+            if bible_version != 'NKJV':
+                scrpiture += f" ({bible_version})"
             self.setTitle(scrpiture)
             self.setVerse(verse)
             scrpiture = self.data["chineseScrpitureInSermon"][index]
