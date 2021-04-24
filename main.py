@@ -5,9 +5,9 @@ from Helpers.docx import Word
 import os
 import time
 if __name__ == '__main__':
-    filename = "Calvary Bulletin 20210418.pdf"
-    sermonTitle = 'Afraid? Fearful? Enter the Kingdom of God!'
-    closingSongName = 'Just As I AM - 照我本相'  # ref name : Helper/closingSong
+    filename = "Calvary Bulletin 20210425.pdf"
+    sermonTitle = 'Sinner, Substitute, Holy God!'
+    closingSongName = 'His Name Is Wonderful - 祂名稱為奇妙 Pinyin'  # ref name : Helper/closingSong
 
     readPdfFile = ReadPdfFile(filename)
 
@@ -26,11 +26,22 @@ if __name__ == '__main__':
             "sermonTitle": sermonTitle, "date": date, "closingSongName": closingSongName, "closingSong": closingSong,
             "blessing_song": blessing_song}
 
+    print(englishScrpitureReading["verses"])
+    print(chineseScrpitureReading)
+    print(englishScrpitureInSermon["verses"])
+    print(chineseScrpitureInSermon)
+
+    # englishScrpitureInSermon["verses"] = ['Leviticus 19:18', 'Leviticus 19:2', 'Leviticus 1:1-4', 'Psalm 4:4-5',
+    #                                       'Psalm 4:8', 'Psalm 5:3', 'Psalm 5:7-8', 'Leviticus 1:4', '1-Peter 1:18-19',
+    #                                       'Ephesians 5:1-2']
+    # chineseScrpitureInSermon = ['利未記 19:18', '利未記 19:2', '詩篇 1:1-4', '詩篇 4:4-5', '詩篇 4:8', '詩篇 5:3', '詩篇 5:7-8',
+    #                             '利未記 1:4', '彼得前書 1:18-19', '以弗所書 5:1-2']
+
+
     if len(englishScrpitureReading["verses"]) != len(chineseScrpitureReading):
         print("englishScrpitureReading != chineseScrpitureReading")
     elif len(englishScrpitureInSermon["verses"]) != len(chineseScrpitureInSermon):
         print("englishScrpitureInSermon != chineseScrpitureInSermon")
-
     else:
         start = time.time()
         threads = []

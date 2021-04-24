@@ -24,9 +24,14 @@ class ReadPdfFile:
         verses = []
         versesDic = {"verses" : [],"bibleVersion" : []}
         for info in data.split("\n"):
-            for key in englishBookDic.keys():
-                if key in info and len(info.rstrip()) < 25:
-                    verses.append(info.rstrip())
+            if len(info.strip().split(' ')) == 3:
+                info = info.strip().split(' ')
+                info = info[0] + '-' + info[1] + ' ' + info[2]
+                verses.append(info)
+            else:
+                for key in englishBookDic.keys():
+                    if key in info and len(info.rstrip()) < 25:
+                        verses.append(info.rstrip())
         for verse in verses:
             hit = 0
             for key in bibleVersionDic.keys():
@@ -81,6 +86,8 @@ class ReadPdfFile:
                     scripture = scripture[0] + ' ' + scripture[1]
                 else:
                     englishScrpitureInSermon["bibleVersion"].append('NKJV')
+                scripture = scripture.replace('(b)','')
+                scripture = scripture.replace('(a)', '')
                 englishScrpitureInSermon["verses"].append(scripture)
         return englishScrpitureInSermon
 

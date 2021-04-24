@@ -37,6 +37,10 @@ def getPdfFile():
             "chineseScrpitureInSermon": chineseScrpitureInSermon, "sermonTitle": sermonTitle, "date": date,
             "closingSongName": closingSongName, "closingSong": closingSong, "blessing_song": blessing_song}
 
+    print('englishScrpitureReading : ',englishScrpitureReading["verses"])
+    print('chineseScrpitureReading : ',chineseScrpitureReading)
+    print('englishScrpitureInSermon : ',englishScrpitureInSermon["verses"])
+    print('chineseScrpitureInSermon : ',chineseScrpitureInSermon)
 
     if len(englishScrpitureReading["verses"]) != len(chineseScrpitureReading):
         return 'Error'
