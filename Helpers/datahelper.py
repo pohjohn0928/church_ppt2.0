@@ -103,6 +103,8 @@ class ReadPdfFile:
                 if key in info:
                     scripture = ' '.join(info.split(' ')).split()
                     scripture = scripture[-2] + ' ' + scripture[-1]
+                    scripture = scripture.replace('(b)', '')
+                    scripture = scripture.replace('(a)', '')
                     verses.append(scripture)
         return verses
 
