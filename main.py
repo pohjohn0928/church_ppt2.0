@@ -4,8 +4,9 @@ from Helpers.email import Gmail
 from Helpers.docx import Word
 import os
 import time
+from Helpers.Books import bible_config
 if __name__ == '__main__':
-    filename = "Calvary Bulletin 20210425.pdf"
+    filename = "Calvary Bulletin 20210411.pdf"
     sermonTitle = 'Sinner, Substitute, Holy God!'
     closingSongName = 'His Name Is Wonderful - 祂名稱為奇妙 Pinyin'  # ref name : Helper/closingSong
 
@@ -38,22 +39,22 @@ if __name__ == '__main__':
     #                             '利未記 1:4', '彼得前書 1:18-19', '以弗所書 5:1-2']
 
 
-    if len(englishScrpitureReading["verses"]) != len(chineseScrpitureReading):
-        print("englishScrpitureReading != chineseScrpitureReading")
-    elif len(englishScrpitureInSermon["verses"]) != len(chineseScrpitureInSermon):
-        print("englishScrpitureInSermon != chineseScrpitureInSermon")
-    else:
-        start = time.time()
-        threads = []
-        threads.append(MakePPT(data))
-        threads[0].start()
-        threads.append(Word(data))
-        threads[1].start()
-
-        for t in threads:
-            t.join()
-        end = time.time()
-        print(f'total cost for ppt and docx : {end - start} sec')
+    # if len(englishScrpitureReading["verses"]) != len(chineseScrpitureReading):
+    #     print("englishScrpitureReading != chineseScrpitureReading")
+    # elif len(englishScrpitureInSermon["verses"]) != len(chineseScrpitureInSermon):
+    #     print("englishScrpitureInSermon != chineseScrpitureInSermon")
+    # else:
+    #     start = time.time()
+    #     threads = []
+    #     threads.append(MakePPT(data))
+    #     threads[0].start()
+    #     threads.append(Word(data))
+    #     threads[1].start()
+    #
+    #     for t in threads:
+    #         t.join()
+    #     end = time.time()
+    #     print(f'total cost for ppt and docx : {end - start} sec')
 
         # start = time.time()
         # path = os.path.join(os.path.dirname(__file__), 'Helpers/receiver/receiver.txt')

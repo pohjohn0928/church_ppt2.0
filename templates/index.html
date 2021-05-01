@@ -8,10 +8,41 @@
 <script type="text/javascript">
 	function getSermonInfo(){
         try{
-            pdf_name = $('#inputFile')[0].files[0].name;
             swal("Good job!", "Please wait", "success");
             sermon_title = document.getElementById("sermon_title").value;
             closing_song = document.getElementById("closing_song").value;
+            var sr_info = [];
+            var sr_version = [];
+            for(var i = 0 ; i < total_sr_num ; i++){
+                book = document.getElementById(`sr_book_${i + 1}`).value;
+                chapter = document.getElementById(`sr_chapter_${i + 1}`).value;
+                start_verse = document.getElementById(`sr_start_verse_${i + 1}`).value;
+                end_verse = document.getElementById(`sr_end_verse_${i + 1}`).value;
+                version = document.getElementById(`sr_version_${i + 1}`).value;
+                sr_version.push(version);
+                sr_info.push(book + ' ' + chapter + ':' + start_verse + '-' + end_verse);
+            }
+            console.log(sr_info);
+            console.log(sr_version);
+
+
+            var sis_info = [];
+            var sis_version = [];
+            for(var i = 0 ; i < total_sis_num ; i++){
+                book = document.getElementById(`sis_book_${i + 1}`).value;
+                chapter = document.getElementById(`sis_chapter_${i + 1}`).value;
+                start_verse = document.getElementById(`sis_start_verse_${i + 1}`).value;
+                end_verse = document.getElementById(`sis_end_verse_${i + 1}`).value;
+                version = document.getElementById(`sis_version_${i + 1}`).value;
+
+                sis_version.push(version);
+                sis_info.push(book + ' ' + chapter + ':' + start_verse + '-' + end_verse);
+            }
+
+            console.log(sis_info);
+            console.log(sis_version);
+
+
             var annocement = [];
             $('.annoncement_check:checked').each(function () {
                 annocement.push($(this)[0].defaultValue)
@@ -20,7 +51,10 @@
                 url : '/getPdfFile',
                 data :
                 {
-                    pdf_name : pdf_name,
+                    sr_info : JSON.stringify({'sr_info' : sr_info}),
+                    sr_version : JSON.stringify({'sr_version' : sr_version}),
+                    sis_info : JSON.stringify({'sis_info' : sis_info}),
+                    sis_version : JSON.stringify({'sis_version' : sis_version}),
                     annocement : JSON.stringify({'annocement':annocement}),
                     sermon_title : sermon_title,
                     closing_song : closing_song
@@ -60,12 +94,25 @@
             }
         }
     }
-
-
 </script>
 <body>
-<input required="required" type="file" id="inputFile" accept="application/pdf"/></br>
 
+<h1>Scripture Reading : </h1>
+<div id = 'sr_block'>
+Amount : <input id="num_sr" required="required" type="number" min="0">
+<button onclick="get_sr_boxes()">submit</button>
+</div>
+<div id="scripture_reading"></div>
+
+<h1>Scripture In Sermon : </h1>
+<div id = 'sis_block'>
+Amount : <input id="num_sis" required="required" type="number" min="0">
+<button id = 'num_sis_btn' onclick="get_sis_boxes()">submit</button>
+</div>
+<div id="scripture_in_sermon"></div>
+
+
+<h1>Annocement : </h1>
 <input type="checkbox" value="Calvary Men’s Fellowship" class="annoncement_check"/>Calvary Men’s Fellowship<br>
 <input type="checkbox" value="Calvary Ladies Fellowship" class="annoncement_check"/>Calvary Ladies Fellowship<br>
 <input type="checkbox" value="Calvary Sisters’ Fellowship" class="annoncement_check"/>Calvary Sisters’ Fellowship<br>
@@ -88,8 +135,11 @@
 <button onclick="selectAll()">Select All</button><br>
 
 
-Sermon Title : <br><textarea class="form-control" id="sermon_title" rows="10" cols="35"
+<h1>Sermon Title : </h1>
+<textarea class="form-control" id="sermon_title" rows="10" cols="35"
                              required="required"></textarea><br>
+
+<h1>Closing Song : </h1>
 <select id="closing_song">
     <option value="Great is Thy Faithfulness - 祢信實何廣大 Pinyin">Great is Thy Faithfulness - 祢信實何廣大</option>
     <option value="He LIves - 主活著pinyin">He LIves - 主活著pinyin</option>
@@ -106,3 +156,270 @@ Sermon Title : <br><textarea class="form-control" id="sermon_title" rows="10" co
 <button type="submit" class="btn btn-primary" onclick="getSermonInfo();">submit</button>
 </body>
 </html>
+
+<script>
+    counter_sr = 0;
+    counter_sis = 0;
+    var bible_info;
+    total_sr_num = 0;
+    total_sis_num = 0;
+    var aj = $.ajax({
+        url : '/bible_info',
+        type : 'post',
+        data : {},
+        success : function (result) {
+            bible_info = result
+        }
+    })
+    function get_sr_boxes(){
+        num_sr = document.getElementById('num_sr').value;
+        if(num_sr <= 0){
+            location.reload();
+        }
+        document.getElementById('sr_block').style.visibility = 'hidden';
+        for(var i = 0 ; i < num_sr ; i++){
+            add_sr_block();
+        }
+        total_sr_num = num_sr;
+    }
+
+    function get_sis_boxes(){
+        num_sis = document.getElementById('num_sis').value;
+        if(num_sis <= 0){
+            location.reload();
+        }
+        document.getElementById('sis_block').style.visibility = 'hidden';
+        for(var i = 0 ; i < num_sis ; i++){
+            add_sis_block();
+        }
+        total_sis_num = num_sis;
+    }
+
+    function add_sr_block(){
+        counter_sr += 1;
+        content = `Book : <select id = 'sr_book_${counter_sr}' onchange = sr_bookChange('${counter_sr}')>`
+        for(key in bible_info){
+            content += `<option value = ${key}>`
+            content += key
+            content += '</option>'
+        }
+        content += '</select>'
+        document.getElementById('scripture_reading').innerHTML += content;
+
+        content = ` Chapter : <select id = 'sr_chapter_${counter_sr}' onchange = sr_chapterChange('${counter_sr}')>`
+        book = document.getElementById(`sr_book_${counter_sr}`).value
+        chapter_len = bible_info[book][0];
+        for(var i = 0 ; i < chapter_len ; i++){
+            content += `<option value = ${i + 1}>`
+            content += i + 1
+            content += '</option>'
+        }
+        content += '</select>'
+        document.getElementById('scripture_reading').innerHTML += content;
+
+        content = ` Start Verse : <select id = 'sr_start_verse_${counter_sr}' onchange = sr_start_verseChange('${counter_sr}')>`
+        chapter = document.getElementById(`sr_chapter_${counter_sr}`).value
+        verse_len = bible_info[book][chapter];
+        for(var i = 0 ; i < verse_len ; i++){
+            content += `<option value = ${i + 1}>`
+            content += i + 1
+            content += '</option>'
+        }
+        content += '</select>';
+        document.getElementById('scripture_reading').innerHTML += content;
+
+        content = ` End Verse : <select id = 'sr_end_verse_${counter_sr}')>`
+        start_verse = document.getElementById(`sr_start_verse_${counter_sr}`).value
+        verse_len = bible_info[book][chapter];
+        for(var i = start_verse ; i <= verse_len ; i++){
+            content += `<option value = ${i}>`
+            content += i
+            content += '</option>'
+        }
+        content += '</select>';
+        document.getElementById('scripture_reading').innerHTML += content;
+
+        end_verse = document.getElementById(`sr_end_verse_${counter_sr}`).value
+        content = ` Bible Version : <select id = 'sr_version_${counter_sr}')>`
+        content += '<option value = "nkjv">NKJV</option>'
+        content += '<option value = "kjv">KJV</option>'
+        content += '<option value = "esv">ESV</option>'
+        content += '<option value = "asv">ASV</option>'
+        content += '<option value = "niv">NIV</option>'
+        content += '<option value = "nlt">NLT</option>'
+        content += '<option value = "nirv">NIRV</option>'
+        content += '</select><br>';
+        document.getElementById('scripture_reading').innerHTML += content;
+        bible_version = document.getElementById(`sr_version_${counter_sr}`).value
+    }
+
+    function sr_bookChange(counter_sr){
+        book = document.getElementById(`sr_book_${counter_sr}`).value
+        chapter_len = bible_info[book][0];
+        content = '';
+        for(var i = 0 ; i < chapter_len ; i++){
+            content += `<option value = ${i + 1}>`
+            content += i + 1
+            content += '</option>'
+        }
+        $(`#sr_chapter_${counter_sr}`).html(content);
+
+        chapter = document.getElementById(`sr_chapter_${counter_sr}`).value
+        verse_len = bible_info[book][chapter];
+        content = '';
+        for(var i = 0 ; i < verse_len ; i++){
+            content += `<option value = ${i + 1}>`
+            content += i + 1
+            content += '</option>'
+        }
+        $(`#sr_start_verse_${counter_sr}`).html(content);
+        $(`#sr_end_verse_${counter_sr}`).html(content);
+
+    }
+
+    function sr_chapterChange(counter_sr){
+        book = document.getElementById(`sr_book_${counter_sr}`).value;
+        chapter = document.getElementById(`sr_chapter_${counter_sr}`).value;
+        verse_len = bible_info[book][chapter];
+        content = '';
+        for(var i = 0 ; i < verse_len ; i++){
+            content += `<option value = ${i + 1}>`
+            content += i + 1
+            content += '</option>'
+        }
+        $(`#sr_start_verse_${counter_sr}`).html(content);
+        $(`#sr_end_verse_${counter_sr}`).html(content);
+    }
+
+    function sr_start_verseChange(counter_sr){
+        book = document.getElementById(`sr_book_${counter_sr}`).value;
+        chapter = document.getElementById(`sr_chapter_${counter_sr}`).value;
+        start_verse = document.getElementById(`sr_start_verse_${counter_sr}`).value;
+        verse_len = bible_info[book][chapter];
+        content = '';
+        for(var i = start_verse ; i <= verse_len ; i++){
+            content += `<option value = ${i}>`
+            content += i
+            content += '</option>'
+        }
+        $(`#sr_end_verse_${counter_sr}`).html(content);
+    }
+
+
+
+
+
+
+
+
+
+    function add_sis_block(){
+        counter_sis += 1;
+        content = `Book : <select id = 'sis_book_${counter_sis}' onchange = sis_bookChange('${counter_sis}')>`
+        for(key in bible_info){
+            content += `<option value = ${key}>`
+            content += key
+            content += '</option>'
+        }
+        content += '</select>'
+        document.getElementById('scripture_in_sermon').innerHTML += content;
+
+        content = ` Chapter : <select id = 'sis_chapter_${counter_sis}' onchange = sis_chapterChange('${counter_sis}')>`
+        book = document.getElementById(`sis_book_${counter_sis}`).value
+        chapter_len = bible_info[book][0];
+        for(var i = 0 ; i < chapter_len ; i++){
+            content += `<option value = ${i + 1}>`
+            content += i + 1
+            content += '</option>'
+        }
+        content += '</select>'
+        document.getElementById('scripture_in_sermon').innerHTML += content;
+
+        content = ` Start Verse : <select id = 'sis_start_verse_${counter_sis}' onchange = sis_start_verseChange('${counter_sis}')>`
+        chapter = document.getElementById(`sis_chapter_${counter_sis}`).value
+        verse_len = bible_info[book][chapter];
+        for(var i = 0 ; i < verse_len ; i++){
+            content += `<option value = ${i + 1}>`
+            content += i + 1
+            content += '</option>'
+        }
+        content += '</select>';
+        document.getElementById('scripture_in_sermon').innerHTML += content;
+
+        content = ` End Verse : <select id = 'sis_end_verse_${counter_sis}')>`
+        start_verse = document.getElementById(`sis_start_verse_${counter_sis}`).value
+        verse_len = bible_info[book][chapter];
+        for(var i = start_verse ; i <= verse_len ; i++){
+            content += `<option value = ${i}>`
+            content += i
+            content += '</option>'
+        }
+        content += '</select>';
+        document.getElementById('scripture_in_sermon').innerHTML += content;
+
+        end_verse = document.getElementById(`sis_end_verse_${counter_sis}`).value
+        content = ` Bible Version : <select id = 'sis_version_${counter_sis}')>`
+        content += '<option value = "nkjv">NKJV</option>'
+        content += '<option value = "kjv">KJV</option>'
+        content += '<option value = "esv">ESV</option>'
+        content += '<option value = "asv">ASV</option>'
+        content += '<option value = "niv">NIV</option>'
+        content += '<option value = "nlt">NLT</option>'
+        content += '<option value = "nirv">NIRV</option>'
+        content += '</select><br>';
+        document.getElementById('scripture_in_sermon').innerHTML += content;
+        bible_version = document.getElementById(`sis_version_${counter_sis}`).value
+    }
+
+    function sis_bookChange(counter_sis){
+        book = document.getElementById(`sis_book_${counter_sis}`).value
+        chapter_len = bible_info[book][0];
+        content = '';
+        for(var i = 0 ; i < chapter_len ; i++){
+            content += `<option value = ${i + 1}>`
+            content += i + 1
+            content += '</option>'
+        }
+        $(`#sis_chapter_${counter_sis}`).html(content);
+
+        chapter = document.getElementById(`sis_chapter_${counter_sis}`).value
+        verse_len = bible_info[book][chapter];
+        content = '';
+        for(var i = 0 ; i < verse_len ; i++){
+            content += `<option value = ${i + 1}>`
+            content += i + 1
+            content += '</option>'
+        }
+        $(`#sis_start_verse_${counter_sis}`).html(content);
+        $(`#sis_end_verse_${counter_sis}`).html(content);
+
+    }
+
+    function sis_chapterChange(counter_sis){
+        book = document.getElementById(`sis_book_${counter_sis}`).value;
+        chapter = document.getElementById(`sis_chapter_${counter_sis}`).value;
+        verse_len = bible_info[book][chapter];
+        content = '';
+        for(var i = 0 ; i < verse_len ; i++){
+            content += `<option value = ${i + 1}>`
+            content += i + 1
+            content += '</option>'
+        }
+        $(`#sis_start_verse_${counter_sis}`).html(content);
+        $(`#sis_end_verse_${counter_sis}`).html(content);
+    }
+
+    function sis_start_verseChange(counter_sis){
+        book = document.getElementById(`sis_book_${counter_sis}`).value;
+        chapter = document.getElementById(`sis_chapter_${counter_sis}`).value;
+        start_verse = document.getElementById(`sis_start_verse_${counter_sis}`).value;
+        verse_len = bible_info[book][chapter];
+        content = '';
+        for(var i = start_verse ; i <= verse_len ; i++){
+            content += `<option value = ${i}>`
+            content += i
+            content += '</option>'
+        }
+        $(`#sis_end_verse_${counter_sis}`).html(content);
+    }
+</script>

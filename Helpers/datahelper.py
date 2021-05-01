@@ -9,104 +9,21 @@ import time
 import threading
 
 class ReadPdfFile:
-    def __init__(self, filename):
+    def __init__(self):
         self.root = os.path.dirname(__file__)
-        path = os.path.join(self.root, f"Bulletin/{filename}")
-        parsed_pdf = parser.from_file(path)
-        self.data = parsed_pdf['content']
 
-    def getEnglishScrpitureReading(self):
-        bibleVersionDic = BibleApi().bibleVersionDic
-        englishBookDic = BibleApi().englishBookDic
-        splitWord1 = "Today’s Scripture Reading 今日經文 "
-        splitWord2 = "Scriptures in Sermon 證道經文"
-        data = self.data.split(splitWord1)[1].split(splitWord2)[0]
-        verses = []
-        versesDic = {"verses" : [],"bibleVersion" : []}
-        for info in data.split("\n"):
-            if len(info.strip().split(' ')) == 3:
-                info = info.strip().split(' ')
-                info = info[0] + '-' + info[1] + ' ' + info[2]
-                verses.append(info)
-            else:
-                for key in englishBookDic.keys():
-                    if key in info and len(info.rstrip()) < 25:
-                        verses.append(info.rstrip())
-        for verse in verses:
-            hit = 0
-            for key in bibleVersionDic.keys():
-                if key in verse:
-                    hit = 1
-                    versesDic["verses"].append(verse.replace(f"({key})","").rstrip())
-                    versesDic["bibleVersion"].append(key)
-                    break
-            if hit == 0:
-                versesDic["verses"].append(verse)
-                versesDic["bibleVersion"].append("NKJV")
-        return versesDic
-
-    def getChineseScrpitureReading(self):
-        chineseBookDic = BibleApi().chineseBookDic
-        splitWord1 = "Today’s Scripture Reading 今日經文 "
-        splitWord2 = "Scriptures in Sermon 證道經文"
-        data = self.data.split(splitWord1)[1].split(splitWord2)[0]
-        verses = []
-        for info in data.split("\n"):
-            for key in chineseBookDic.keys():
-                if key in info and len(info.rstrip()) < 14:
-                    verses.append(info.rstrip())
-        return verses
-
-    def getEnglishScrpitureInSermon(self):
-        bibleVersionDic = BibleApi().bibleVersionDic
-        englishBookDic = BibleApi().englishBookDic
-        splitWord1 = "Scriptures in Sermon 證道經文"
-        splitWord2 = "Announcements:"
-        data = self.data.split(splitWord1)[1].split(splitWord2)[0]
-        versesDic = {"verses" : [],"bibleVersion" : []}
-        verses = []
-        return_scripture = ' '.join(data.replace('\n','').split(' ')).split()
-        del return_scripture[0:3]
-        englishScrpitureInSermon = {'verses' : [] , 'bibleVersion' : []}
-        for index,s in enumerate(return_scripture):
-            scripture = ''
-            if s in englishBookDic.keys():
-                scripture = s + ' ' + return_scripture[index+1]
-            elif s.replace('(','').replace(')','') in bibleVersionDic.keys():
-                del englishScrpitureInSermon['bibleVersion'][-1]
-                scripture = return_scripture[index-2] + ' ' + return_scripture[index - 1] + ' ' + s
-            elif len(s) == 1:
-                scripture = return_scripture[index] + '-' + return_scripture[index+1] + ' ' + return_scripture[index + 2]
-            if scripture != '':
-                if len(scripture.split(' ')) == 3:
-                    del englishScrpitureInSermon["verses"][-1]
-                    version = scripture.split(' ')[-1].replace('(','').replace(')','')
-                    englishScrpitureInSermon["bibleVersion"].append(version)
-                    scripture = scripture.split(' ')
-                    scripture = scripture[0] + ' ' + scripture[1]
-                else:
-                    englishScrpitureInSermon["bibleVersion"].append('NKJV')
-                scripture = scripture.replace('(b)','')
-                scripture = scripture.replace('(a)', '')
-                englishScrpitureInSermon["verses"].append(scripture)
-        return englishScrpitureInSermon
-
-
-    def getChineseScrpitureInSermon(self):
-        chineseBookDic = BibleApi().chineseBookDic
-        splitWord1 = "Scriptures in Sermon 證道經文"
-        splitWord2 = "Announcements:"
-        data = self.data.split(splitWord1)[1].split(splitWord2)[0]
-        verses = []
-        for info in data.split("\n"):
-            for key in chineseBookDic.keys():
-                if key in info:
-                    scripture = ' '.join(info.split(' ')).split()
-                    scripture = scripture[-2] + ' ' + scripture[-1]
-                    scripture = scripture.replace('(b)', '')
-                    scripture = scripture.replace('(a)', '')
-                    verses.append(scripture)
-        return verses
+    def getChieseScripture(self,scriptures):
+        if scriptures == []:
+            return []
+        else:
+            dic = BibleApi().english_chinese_dic
+            return_scripture = []
+            for scripture in scriptures:
+                i = scripture.split(' ')[0]
+                i = dic[i]
+                j = scripture.split(' ')[1]
+                return_scripture.append(i + ' ' + j)
+            return return_scripture
 
     def getClosingSong(self,closingSongName):
         path = os.path.join(self.root,f'closingSong/{closingSongName}.txt')
@@ -135,14 +52,24 @@ class ReadPdfFile:
 class BibleApi:
     def __init__(self):
         root = os.path.dirname(__file__)
+
+        self.englishToChinese = root + '/Books/englishToChinese.txt'
         self.bibleVersion = root + "/bibleVersion/bibleVersion.txt"
         self.englishBook = root + "/Books/englishBook.txt"
         self.chineseBook = root + "/Books/chineseBook.txt"
         self.setBibleVersion()
         self.setEnglishBook()
         self.setChineseBook()
+        self.english_to_chinese()
         self.englishVerseBaseUrl = "https://biblia-api-pdf.herokuapp.com/api?method=bible&"
         self.chineseVerseBaseUrl = "http://ibibles.net/quote.php?cut-"
+
+    def english_to_chinese(self):
+        self.english_chinese_dic = {}
+        file = open(self.englishToChinese)
+        for scripture in file:
+            self.english_chinese_dic[scripture.split(' ')[0]] = scripture.split(' ')[1].replace('\n','')
+
 
     def getEnglishVerse(self,bibleVersion,book,chapter,startVerse,endVerse):
         startVerse = int(startVerse)
@@ -260,7 +187,7 @@ class MakePPT(threading.Thread):
                 scripture = info["verses"][index]
                 bibleVersion = info["bibleVersion"][index]
                 verses = self.getEnglishBibleVerses(scripture,bibleVersion)
-                if bibleVersion != 'NKJV':
+                if bibleVersion != 'NKJV' and bibleVersion != 'nkjv':
                     scripture += ' ' + f"({bibleVersion})"
                 self.addPage(scripture,verses)
         else:
@@ -298,7 +225,7 @@ class MakePPT(threading.Thread):
             slide = self.prs.slides.add_slide(self.layout)
             tf = self.initTxBox(slide)
             chapter = englishScrpitureInSermon["verses"][i]
-            if englishScrpitureInSermon['bibleVersion'][i] != 'NKJV':
+            if englishScrpitureInSermon['bibleVersion'][i] != 'NKJV' and englishScrpitureInSermon['bibleVersion'][i] != 'nkjv':
                 chapter += ' ' + f"({englishScrpitureInSermon['bibleVersion'][i]})"
             self.setChapter(tf,chapter)
             pageContent = self.seperateVerse(englishVerses[i])

@@ -3,34 +3,52 @@ from Helpers.datahelper import ReadPdfFile, MakePPT
 from Helpers.docx import Word
 from Helpers.email import Gmail
 import time
+from Helpers.Books import bible_config
 
 import os
 import json
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 
 
 @app.route('/')
 def home():
     return render_template("index.html")
 
+@app.route('/bible_info', methods=["POST"])
+def bible_info():
+    bible = bible_config.passage_data
+    return bible
 
 @app.route('/getPdfFile', methods=["POST"])
 def getPdfFile():
-    filename = request.values['pdf_name']
     sermonTitle = request.values['sermon_title']
     closingSongName = request.values['closing_song']
+    sr_info = request.form.get('sr_info')
+    sr_version = request.form.get('sr_version')
+    sis_info = request.form.get('sis_info')
+    sis_version = request.form.get('sis_version')
     annocement = request.form.get('annocement')
+
+    sr_info = json.loads(sr_info)["sr_info"]
+    sr_version = json.loads(sr_version)["sr_version"]
+    sis_info = json.loads(sis_info)["sis_info"]
+    sis_version = json.loads(sis_version)["sis_version"]
     annocement = json.loads(annocement)["annocement"]
-    readPdfFile = ReadPdfFile(filename)
-    englishScrpitureReading = readPdfFile.getEnglishScrpitureReading()
-    chineseScrpitureReading = readPdfFile.getChineseScrpitureReading()
-    englishScrpitureInSermon = readPdfFile.getEnglishScrpitureInSermon()
-    chineseScrpitureInSermon = readPdfFile.getChineseScrpitureInSermon()
+
+    readPdfFile = ReadPdfFile()
+    chineseScrpitureReading = readPdfFile.getChieseScripture(sr_info)
+    chineseScrpitureInSermon = readPdfFile.getChieseScripture(sis_info)
+    englishScrpitureReading = {"verses" : sr_info , "bibleVersion" : sr_version}
+    englishScrpitureInSermon = {"verses" : sis_info , "bibleVersion" : sis_version}
 
     closingSong = readPdfFile.getClosingSong(closingSongName)
     blessing_song = readPdfFile.getBlessingSong()
-    date = filename.split(" ")[2].split('.')[0]
+
+
+    date = ''
+
 
     data = {"annocement": annocement, "englishScrpitureReading": englishScrpitureReading,
             "chineseScrpitureReading": chineseScrpitureReading, "englishScrpitureInSermon": englishScrpitureInSermon,
