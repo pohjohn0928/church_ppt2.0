@@ -4,7 +4,6 @@ from pptx.util import Inches, Pt,Cm
 from pptx.dml.color import RGBColor
 import requests
 from bs4 import BeautifulSoup
-from tika import parser
 import time
 import threading
 
