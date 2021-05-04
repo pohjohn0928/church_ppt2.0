@@ -4,6 +4,7 @@ from Helpers.docx import Word
 from Helpers.email import Gmail
 import time
 from Helpers.Books import bible_config
+import datetime
 
 import os
 import json
@@ -30,12 +31,16 @@ def getPdfFile():
     sis_info = request.form.get('sis_info')
     sis_version = request.form.get('sis_version')
     annocement = request.form.get('annocement')
+    receivers = request.form.get('receivers')
+
 
     sr_info = json.loads(sr_info)["sr_info"]
     sr_version = json.loads(sr_version)["sr_version"]
     sis_info = json.loads(sis_info)["sis_info"]
     sis_version = json.loads(sis_version)["sis_version"]
     annocement = json.loads(annocement)["annocement"]
+    receivers = json.loads(receivers)["receivers"]
+
 
     readPdfFile = ReadPdfFile()
     chineseScrpitureReading = readPdfFile.getChieseScripture(sr_info)
@@ -46,8 +51,10 @@ def getPdfFile():
     closingSong = readPdfFile.getClosingSong(closingSongName)
     blessing_song = readPdfFile.getBlessingSong()
 
-
-    date = ''
+    d = datetime.date.today()
+    while d.weekday() != 6:
+        d += datetime.timedelta(1)
+    date = d
 
 
     data = {"annocement": annocement, "englishScrpitureReading": englishScrpitureReading,
@@ -78,12 +85,9 @@ def getPdfFile():
         end = time.time()
         print(f'total cost for ppt and docx : {end - start} sec')
 
-        #Send Email
+        # Send Email
         start = time.time()
-        path = os.path.join(os.path.dirname(__file__), 'Helpers/receiver/receiver.txt')
-        file = open(path)
-        for f in file:
-            receiver = f.replace('\n', '').strip()
+        for receiver in receivers:
             gmail = Gmail()
             gmail.send(receiver, f'Scripture for {data["date"]}', f'churchPPT{data["date"]}.pptx', data["sermonTitle"])
             end = time.time()

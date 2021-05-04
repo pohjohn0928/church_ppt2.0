@@ -3,6 +3,19 @@
 <head>
     <title></title>
 </head>
+<style>
+    body {
+        background-image: url('/static/background.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        opacity: 1;
+    }
+</style>
+
+</style>
+
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script type="text/javascript">
@@ -22,8 +35,6 @@
                 sr_version.push(version);
                 sr_info.push(book + ' ' + chapter + ':' + start_verse + '-' + end_verse);
             }
-            console.log(sr_info);
-            console.log(sr_version);
 
 
             var sis_info = [];
@@ -39,14 +50,18 @@
                 sis_info.push(book + ' ' + chapter + ':' + start_verse + '-' + end_verse);
             }
 
-            console.log(sis_info);
-            console.log(sis_version);
 
 
             var annocement = [];
             $('.annoncement_check:checked').each(function () {
                 annocement.push($(this)[0].defaultValue)
             });
+
+            var receivers = [];
+            $('.receiver_email:checked').each(function () {
+                receivers.push($(this)[0].defaultValue)
+            });
+
             var aj = $.ajax({
                 url : '/getPdfFile',
                 data :
@@ -56,6 +71,7 @@
                     sis_info : JSON.stringify({'sis_info' : sis_info}),
                     sis_version : JSON.stringify({'sis_version' : sis_version}),
                     annocement : JSON.stringify({'annocement':annocement}),
+                    receivers : JSON.stringify({'receivers':receivers}),
                     sermon_title : sermon_title,
                     closing_song : closing_song
                 },
@@ -94,66 +110,93 @@
             }
         }
     }
+
+
 </script>
 <body>
+<center><h1>Church PowerPoint</h1></center>
+<div style="width:800px; height:auto; float:left; display:inline;margin-left:200px">
+    <h2>Scripture Reading : </h2>
+    <div id='sr_block'>
+        Amount : <input id="num_sr" required="required" type="number" min="0">
+        <button onclick="get_sr_boxes()">submit</button>
+    </div>
+    <div id="scripture_reading"></div>
 
-<h1>Scripture Reading : </h1>
-<div id = 'sr_block'>
-Amount : <input id="num_sr" required="required" type="number" min="0">
-<button onclick="get_sr_boxes()">submit</button>
+    <h2>Scripture In Sermon : </h2>
+    <div id='sis_block'>
+        Amount : <input id="num_sis" required="required" type="number" min="0">
+        <button id='num_sis_btn' onclick="get_sis_boxes()">submit</button>
+    </div>
+    <div id="scripture_in_sermon"></div>
+
+
+    <h2>Annocement : </h2>
+    <input type="checkbox" value="Calvary Men’s Fellowship" class="annoncement_check"/>Calvary Men’s Fellowship<br>
+    <input type="checkbox" value="Calvary Ladies Fellowship" class="annoncement_check"/>Calvary Ladies Fellowship<br>
+    <input type="checkbox" value="Calvary Sisters’ Fellowship" class="annoncement_check"/>Calvary Sisters’
+    Fellowship<br>
+    <input type="checkbox" value="Calvary Youth Fellowship" class="annoncement_check"/>Calvary Youth Fellowship<br>
+    <input type="checkbox" value="Filipino Bible Study and Fellowship" class="annoncement_check"/>Filipino Bible Study
+    and Fellowship<br>
+    <input type="checkbox" value="Calvary Marriage Fellowship" class="annoncement_check"/>Calvary Marriage
+    Fellowship<br>
+    <input type="checkbox" value="Calvary Choir" class="annoncement_check"/>Calvary Choir<br>
+    <input type="checkbox" value="Calvary Children’s Sunday School" class="annoncement_check"/>Calvary Children’s Sunday
+    School<br>
+    <input type="checkbox" value="Calvary Multilingual Prayer Meeting" class="annoncement_check"/>Calvary Multilingual
+    Prayer Meeting<br>
+    <input type="checkbox" value="Calvary Sunday Chinese Bible Study" class="annoncement_check"/>Calvary Sunday Chinese
+    Bible Study<br>
+    <input type="checkbox" value="Calvary Sunday Morning English Bible Study" class="annoncement_check"/>Calvary Sunday
+    Morning English Bible Study<br>
+    <input type="checkbox" value="Calvary Wednesday Night Bible Study" class="annoncement_check"/>Calvary Wednesday
+    Night Bible Study<br>
+    <input type="checkbox" value="Calvary Worship Special Music" class="annoncement_check"/>Calvary Worship Special
+    Music<br>
+    <input type="checkbox" value="Calvary Church Library" class="annoncement_check"/>Calvary Church Library<br>
+    <input type="checkbox" value="Calvary Nursery" class="annoncement_check"/>Calvary Nursery<br>
+    <input type="checkbox" value="Calvary PowerPoint Audiovisual Ministry" class="annoncement_check"/>Calvary PowerPoint
+    Audiovisual Ministry<br>
+    <input type="checkbox" value="Calvary Ushers and Greeters Group" class="annoncement_check"/>Calvary Ushers and
+    Greeters Group<br>
+    <input type="checkbox" value="Questions about How to Give and Church Finances" class="annoncement_check"/>Questions
+    about How to Give and Church Finances<br>
+    <input type="checkbox" value="Thursday Night Bible Study with Stephen Cha Fellowship Hall"
+           class="annoncement_check"/>Thursday Night Bible Study with Stephen Cha Fellowship Hall<br>
+    <button onclick="selectAll()">Select All</button>
 </div>
-<div id="scripture_reading"></div>
 
-<h1>Scripture In Sermon : </h1>
-<div id = 'sis_block'>
-Amount : <input id="num_sis" required="required" type="number" min="0">
-<button id = 'num_sis_btn' onclick="get_sis_boxes()">submit</button>
+<div style="width:300px; height:auto; float:left; display:inline">
+    <h2>Sermon Title : </h2>
+    <textarea class="form-control" id="sermon_title" rows="10" cols="35"
+              required="required"></textarea><br>
+
+
+    <h2>Closing Song : </h2>
+    <select id="closing_song">
+        <option value="Great is Thy Faithfulness - 祢信實何廣大 Pinyin">Great is Thy Faithfulness - 祢信實何廣大</option>
+        <option value="He LIves - 主活著pinyin">He LIves - 主活著pinyin</option>
+        <option value="His Name Is Wonderful - 祂名稱為奇妙 Pinyin">His Name Is Wonderful - 祂名稱為奇妙</option>
+        <option value="I Surrender All - 奉獻所有">I Surrender All - 奉獻所有</option>
+        <option value="In His Time - 在主裡的時刻">In His Time - 在主裡的時刻</option>
+        <option value="Jesus Paid It All - 主替我捨身">Jesus Paid It All - 主替我捨身</option>
+        <option value="The Old Rugged Cross - 古舊十架">The Old Rugged Cross - 古舊十架</option>
+        <option value="Amazing Grace - 奇異恩典">Amazing Grace - 奇異恩典</option>
+        <option value="Just As I AM - 照我本相">Just As I AM - 照我本相</option>
+        <option value="其他">others - 其他</option>
+
+    </select><br>
+
+    <h2>Receivers : </h2>
+    <input type="checkbox" value="brianpjl@gmail.com" class="receiver_email"/>Brian<br>
+    <input type="checkbox" value="thedifference0507@gmail.com" class="receiver_email"/>Daniel<br>
+    <input type="checkbox" value="sue71615@hotmail.com" class="receiver_email"/>Jason<br>
+    <input type="checkbox" value="pohjohn0928@gmail.com" class="receiver_email"/>John<br>
+    <input type="checkbox" value="pohjohn0928@yahoo.com" class="receiver_email"/>John2<br><br>
+    <button type="submit" class="btn btn-primary" onclick="getSermonInfo();" style="font-size: 24px; background-color: #4CAF50;border-radius: 12px;" >submit</button>
 </div>
-<div id="scripture_in_sermon"></div>
 
-
-<h1>Annocement : </h1>
-<input type="checkbox" value="Calvary Men’s Fellowship" class="annoncement_check"/>Calvary Men’s Fellowship<br>
-<input type="checkbox" value="Calvary Ladies Fellowship" class="annoncement_check"/>Calvary Ladies Fellowship<br>
-<input type="checkbox" value="Calvary Sisters’ Fellowship" class="annoncement_check"/>Calvary Sisters’ Fellowship<br>
-<input type="checkbox" value="Calvary Youth Fellowship" class="annoncement_check"/>Calvary Youth Fellowship<br>
-<input type="checkbox" value="Filipino Bible Study and Fellowship" class="annoncement_check"/>Filipino Bible Study and Fellowship<br>
-<input type="checkbox" value="Calvary Marriage Fellowship" class="annoncement_check"/>Calvary Marriage Fellowship<br>
-<input type="checkbox" value="Calvary Choir" class="annoncement_check"/>Calvary Choir<br>
-<input type="checkbox" value="Calvary Children’s Sunday School" class="annoncement_check"/>Calvary Children’s Sunday School<br>
-<input type="checkbox" value="Calvary Multilingual Prayer Meeting" class="annoncement_check"/>Calvary Multilingual Prayer Meeting<br>
-<input type="checkbox" value="Calvary Sunday Chinese Bible Study" class="annoncement_check"/>Calvary Sunday Chinese Bible Study<br>
-<input type="checkbox" value="Calvary Sunday Morning English Bible Study" class="annoncement_check"/>Calvary Sunday Morning English Bible Study<br>
-<input type="checkbox" value="Calvary Wednesday Night Bible Study" class="annoncement_check"/>Calvary Wednesday Night Bible Study<br>
-<input type="checkbox" value="Calvary Worship Special Music" class="annoncement_check"/>Calvary Worship Special Music<br>
-<input type="checkbox" value="Calvary Church Library" class="annoncement_check"/>Calvary Church Library<br>
-<input type="checkbox" value="Calvary Nursery" class="annoncement_check"/>Calvary Nursery<br>
-<input type="checkbox" value="Calvary PowerPoint Audiovisual Ministry" class="annoncement_check"/>Calvary PowerPoint Audiovisual Ministry<br>
-<input type="checkbox" value="Calvary Ushers and Greeters Group" class="annoncement_check"/>Calvary Ushers and Greeters Group<br>
-<input type="checkbox" value="Questions about How to Give and Church Finances" class="annoncement_check"/>Questions about How to Give and Church Finances<br>
-<input type="checkbox" value="Thursday Night Bible Study with Stephen Cha Fellowship Hall" class="annoncement_check"/>Thursday Night Bible Study with Stephen Cha Fellowship Hall<br>
-<button onclick="selectAll()">Select All</button><br>
-
-
-<h1>Sermon Title : </h1>
-<textarea class="form-control" id="sermon_title" rows="10" cols="35"
-                             required="required"></textarea><br>
-
-<h1>Closing Song : </h1>
-<select id="closing_song">
-    <option value="Great is Thy Faithfulness - 祢信實何廣大 Pinyin">Great is Thy Faithfulness - 祢信實何廣大</option>
-    <option value="He LIves - 主活著pinyin">He LIves - 主活著pinyin</option>
-    <option value="His Name Is Wonderful - 祂名稱為奇妙 Pinyin">His Name Is Wonderful - 祂名稱為奇妙</option>
-    <option value="I Surrender All - 奉獻所有">I Surrender All - 奉獻所有</option>
-    <option value="In His Time - 在主裡的時刻">In His Time - 在主裡的時刻</option>
-    <option value="Jesus Paid It All - 主替我捨身">Jesus Paid It All - 主替我捨身</option>
-    <option value="The Old Rugged Cross - 古舊十架">The Old Rugged Cross - 古舊十架</option>
-    <option value="Amazing Grace - 奇異恩典">Amazing Grace - 奇異恩典</option>
-    <option value="Just As I AM - 照我本相">Just As I AM - 照我本相</option>
-    <option value="其他">others - 其他</option>
-
-</select><br>
-<button type="submit" class="btn btn-primary" onclick="getSermonInfo();">submit</button>
 </body>
 </html>
 
@@ -422,4 +465,6 @@ Amount : <input id="num_sis" required="required" type="number" min="0">
         }
         $(`#sis_end_verse_${counter_sis}`).html(content);
     }
+
+
 </script>

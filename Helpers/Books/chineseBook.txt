@@ -44,9 +44,7 @@ john 約翰福音
 acts 使徒行傳
 rom 羅馬書
 1cor 哥林多前書
-1cor 歌林多前書
 2cor 哥林多後書
-2cor 歌林多後書
 gal 加拉太書
 eph 以弗所書
 phi 腓立比書

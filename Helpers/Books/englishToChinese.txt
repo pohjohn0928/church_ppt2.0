@@ -43,8 +43,8 @@ Luke 路加福音
 John 約翰福音
 Acts 使徒行傳
 Romans 羅馬書
-1-Corinthians 歌林多前書
-2-Corinthians 歌林多後書
+1-Corinthians 哥林多前書
+2-Corinthians 哥林多後書
 Galatians 加拉太書
 Ephesians 以弗所書
 Philippians 腓立比書

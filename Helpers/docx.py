@@ -10,7 +10,7 @@ class Word(threading.Thread):   #threading.Thread
         self.start_time = time.time()
         self.data = data
         self.document = Document()
-        self.date = data["date"][0:4] + '/' + data["date"][4:6] + '/' + data["date"][6:8]
+        self.date = data["date"]
         self.document.add_heading(f'Scripture for {self.date}', 0)
 
     def run(self):
@@ -18,7 +18,7 @@ class Word(threading.Thread):   #threading.Thread
             scrpiture = self.data["englishScrpitureInSermon"]["verses"][index]
             bible_version = self.data["englishScrpitureInSermon"]["bibleVersion"][index]
             verse = MakePPT(self.data).getEnglishBibleVerses(scrpiture, bible_version)
-            if bible_version != 'NKJV':
+            if bible_version != 'NKJV' and bible_version != 'nkjv':
                 scrpiture += f" ({bible_version})"
             self.setTitle(scrpiture)
             self.setVerse(verse)
