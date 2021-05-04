@@ -1,1 +1,1 @@
-web: church_ppt:app
+web: gunicorn church-ppt:app
