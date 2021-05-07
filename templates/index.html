@@ -13,7 +13,6 @@
     }
 </style>
 
-</style>
 
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -164,13 +163,13 @@
     about How to Give and Church Finances<br>
     <input type="checkbox" value="Thursday Night Bible Study with Stephen Cha Fellowship Hall"
            class="annoncement_check"/>Thursday Night Bible Study with Stephen Cha Fellowship Hall<br>
-    <button onclick="selectAll()">Select All</button>
+    <button onclick="selectAll()">Select All</button><br>
 </div>
 
 <div style="width:300px; height:auto; float:left; display:inline">
     <h2>Sermon Title : </h2>
     <textarea class="form-control" id="sermon_title" rows="10" cols="35"
-              required="required"></textarea><br>
+              required="required"></textarea>
 
 
     <h2>Closing Song : </h2>
@@ -194,7 +193,7 @@
     <input type="checkbox" value="sue71615@hotmail.com" class="receiver_email"/>Jason<br>
     <input type="checkbox" value="pohjohn0928@gmail.com" class="receiver_email"/>John<br>
     <input type="checkbox" value="pohjohn0928@yahoo.com" class="receiver_email"/>John2<br><br>
-    <button type="submit" class="btn btn-primary" onclick="getSermonInfo();" style="font-size: 24px; background-color: #4CAF50;border-radius: 12px;" >submit</button>
+    <button type="submit" class="btn btn-primary" onclick="getSermonInfo();" style="font-size: 24px; background-color: #4CAF50;border-radius: 12px;" >Done</button>
 </div>
 
 </body>
@@ -291,7 +290,7 @@
         content += '<option value = "niv">NIV</option>'
         content += '<option value = "nlt">NLT</option>'
         content += '<option value = "nirv">NIRV</option>'
-        content += '</select><br>';
+        content += '</select><br><br>';
         document.getElementById('scripture_reading').innerHTML += content;
         bible_version = document.getElementById(`sr_version_${counter_sr}`).value
     }
@@ -409,7 +408,7 @@
         content += '<option value = "niv">NIV</option>'
         content += '<option value = "nlt">NLT</option>'
         content += '<option value = "nirv">NIRV</option>'
-        content += '</select><br>';
+        content += '</select><br><br>';
         document.getElementById('scripture_in_sermon').innerHTML += content;
         bible_version = document.getElementById(`sis_version_${counter_sis}`).value
     }
