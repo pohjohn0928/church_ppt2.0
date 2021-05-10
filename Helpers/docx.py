@@ -18,12 +18,14 @@ class Word(threading.Thread):   #threading.Thread
             scrpiture = self.data["englishScrpitureInSermon"]["verses"][index]
             bible_version = self.data["englishScrpitureInSermon"]["bibleVersion"][index]
             verse = MakePPT(self.data).getEnglishBibleVerses(scrpiture, bible_version)
+            scrpiture = self.scrpiture_detail(scrpiture)
             if bible_version != 'NKJV' and bible_version != 'nkjv':
                 scrpiture += f" ({bible_version})"
             self.setTitle(scrpiture)
             self.setVerse(verse)
             scrpiture = self.data["chineseScrpitureInSermon"][index]
             verse = MakePPT(self.data).getChineseBibleVerses(scrpiture)
+            scrpiture = self.scrpiture_detail(scrpiture)
             self.setTitle(scrpiture, 'chinese')
             self.setVerse(verse, 'chinese')
         self.document.save('Scripture_In_Sermon.docx')
@@ -52,3 +54,13 @@ class Word(threading.Thread):   #threading.Thread
             font = run.font
             if language != 'english':
                 font.name = '微軟正黑體'
+
+    def scrpiture_detail(self,scrpiture):
+        start_verse = scrpiture.split(':')[1].split('-')[0]
+        end_verse = scrpiture.split(':')[1].split('-')[1].split(' ')[0]
+        if start_verse == end_verse:
+            book = scrpiture.split(' ')[0]
+            chapter = scrpiture.split(' ')[1].split(':')[0]
+            return f'{book} {chapter}:{start_verse}'
+        else:
+            return scrpiture

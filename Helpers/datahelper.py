@@ -65,7 +65,7 @@ class BibleApi:
 
     def english_to_chinese(self):
         self.english_chinese_dic = {}
-        file = open(self.englishToChinese)
+        file = open(self.englishToChinese,encoding='utf-8')
         for scripture in file:
             self.english_chinese_dic[scripture.split(' ')[0]] = scripture.split(' ')[1].replace('\n','')
 
@@ -181,7 +181,7 @@ class MakePPT(threading.Thread):
             title.width = Cm(40)
             title.top = Inches(4)
             title.text = "Scrpiture Reading"
-            title.text_frame.paragraphs[0].font.size = Pt(60)
+            title.text_frame.paragraphs[0].font.size = Pt(70)
             for index in range(len(info["verses"])):
                 scripture = info["verses"][index]
                 bibleVersion = info["bibleVersion"][index]
@@ -218,7 +218,7 @@ class MakePPT(threading.Thread):
         subtitle.text = self.data["sermonTitle"]
         subtitle.width = Cm(40)
         subtitle.top = Inches(5)
-        title.text_frame.paragraphs[0].font.size = Pt(60)
+        title.text_frame.paragraphs[0].font.size = Pt(70)
         subtitle.text_frame.paragraphs[0].font.size = Pt(50)
         for i in range(len(englishScrpitureInSermon["verses"])):
             slide = self.prs.slides.add_slide(self.layout)
@@ -269,10 +269,16 @@ class MakePPT(threading.Thread):
         tf.word_wrap = True
         return tf
 
-    def setChapter(self,tf,chapter,language = 'english'):
+    def setChapter(self,tf,info,language = 'english'):
         p = tf.paragraphs[0]
+        book = info.split(' ')[0]
+        chapter = info.split(' ')[1].split(':')[0]
+        start_verse = info.split(':')[1].split('-')[0]
+        end_verse = info.split(':')[1].split('-')[1].split(' ')[0]
+        if start_verse == end_verse:
+            info = f'{book} {chapter}:{start_verse}'
         run = p.add_run()
-        run.text = chapter
+        run.text = info
         font = run.font
         font.size = Pt(54)
         font.bold = True
@@ -463,7 +469,7 @@ class MakePPT(threading.Thread):
         title.text = "The Blessing Song"
         title.width = Cm(40)
         title.top = Inches(4)
-        title.text_frame.paragraphs[0].font.size = Pt(60)
+        title.text_frame.paragraphs[0].font.size = Pt(70)
 
         blessing_song = self.data["blessing_song"]
         contentInFirstPage = []

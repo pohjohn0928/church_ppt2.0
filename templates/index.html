@@ -191,6 +191,7 @@
     <input type="checkbox" value="brianpjl@gmail.com" class="receiver_email"/>Brian<br>
     <input type="checkbox" value="thedifference0507@gmail.com" class="receiver_email"/>Daniel<br>
     <input type="checkbox" value="sue71615@hotmail.com" class="receiver_email"/>Jason<br>
+    <input type="checkbox" value="kayeleetonacao@gmail.com" class="receiver_email"/>kaye<br>
     <input type="checkbox" value="pohjohn0928@gmail.com" class="receiver_email"/>John<br>
     <input type="checkbox" value="pohjohn0928@yahoo.com" class="receiver_email"/>John2<br><br>
     <button type="submit" class="btn btn-primary" onclick="getSermonInfo();" style="font-size: 24px; background-color: #4CAF50;border-radius: 12px;" >Done</button>
@@ -283,13 +284,13 @@
 
         end_verse = document.getElementById(`sr_end_verse_${counter_sr}`).value
         content = ` Bible Version : <select id = 'sr_version_${counter_sr}')>`
-        content += '<option value = "nkjv">NKJV</option>'
-        content += '<option value = "kjv">KJV</option>'
-        content += '<option value = "esv">ESV</option>'
-        content += '<option value = "asv">ASV</option>'
-        content += '<option value = "niv">NIV</option>'
-        content += '<option value = "nlt">NLT</option>'
-        content += '<option value = "nirv">NIRV</option>'
+        content += '<option value = "NKJV">NKJV</option>'
+        content += '<option value = "KJV">KJV</option>'
+        content += '<option value = "ESV">ESV</option>'
+        content += '<option value = "ASV">ASV</option>'
+        content += '<option value = "NIV">NIV</option>'
+        content += '<option value = "NLT">NLT</option>'
+        content += '<option value = "NIRV">NIRV</option>'
         content += '</select><br><br>';
         document.getElementById('scripture_reading').innerHTML += content;
         bible_version = document.getElementById(`sr_version_${counter_sr}`).value
@@ -401,13 +402,13 @@
 
         end_verse = document.getElementById(`sis_end_verse_${counter_sis}`).value
         content = ` Bible Version : <select id = 'sis_version_${counter_sis}')>`
-        content += '<option value = "nkjv">NKJV</option>'
-        content += '<option value = "kjv">KJV</option>'
-        content += '<option value = "esv">ESV</option>'
-        content += '<option value = "asv">ASV</option>'
-        content += '<option value = "niv">NIV</option>'
-        content += '<option value = "nlt">NLT</option>'
-        content += '<option value = "nirv">NIRV</option>'
+        content += '<option value = "NKJV">NKJV</option>'
+        content += '<option value = "KJV">KJV</option>'
+        content += '<option value = "ESV">ESV</option>'
+        content += '<option value = "ASV">ASV</option>'
+        content += '<option value = "NIV">NIV</option>'
+        content += '<option value = "NLT">NLT</option>'
+        content += '<option value = "NIRV">NIRV</option>'
         content += '</select><br><br>';
         document.getElementById('scripture_in_sermon').innerHTML += content;
         bible_version = document.getElementById(`sis_version_${counter_sis}`).value
