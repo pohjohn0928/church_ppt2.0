@@ -1,4 +1,3 @@
-- put file into Helpers/Bulletin folder
 - copy the sermon title in the pdf file
 - open the cmd
 - set path to ..../church_ppt
