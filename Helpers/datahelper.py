@@ -275,8 +275,16 @@ class MakePPT(threading.Thread):
         chapter = info.split(' ')[1].split(':')[0]
         start_verse = info.split(':')[1].split('-')[0]
         end_verse = info.split(':')[1].split('-')[1].split(' ')[0]
+        version = ''
+        try:
+            version = info.split(' ')[2]
+        except:
+            pass
+
         if start_verse == end_verse:
-            info = f'{book} {chapter}:{start_verse}'
+            info = f'{book} {chapter}:{start_verse} {version}'
+
+
         run = p.add_run()
         run.text = info
         font = run.font
