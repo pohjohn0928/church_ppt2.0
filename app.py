@@ -15,7 +15,22 @@ app.config['JSON_SORT_KEYS'] = False
 
 @app.route('/')
 def home():
+    return render_template("init.html")
+
+@app.route('/init', methods=["POST"])
+def init():
+    account = request.values['account']
+    password = request.values['password']
+    if account == 'church_ppt' and password == 'churchchurch':
+        return 'good'
+    else:
+        return 'error'
+
+@app.route('/makePPT')
+def makePPT():
     return render_template("index.html")
+
+
 
 @app.route('/bible_info', methods=["POST"])
 def bible_info():
