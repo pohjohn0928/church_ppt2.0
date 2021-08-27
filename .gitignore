@@ -1,7 +1,9 @@
 venv
 .idea
 __pycache__/
+.DS_Store
 *.log\
 *.pptx
 *.pdf
 *.docx
+*.swp

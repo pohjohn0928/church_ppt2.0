@@ -58,8 +58,19 @@
       <input type="password" id="password">
     </div>
     <div class="input-group mb-3">
-      <button type="button" class="btn btn-secondary" onclick="confirm()">Submit</button>
+      <button type="button" class="btn btn-secondary" onclick="confirm()" id="check">Submit</button>
     </div>
 </div>
+
+<script>
+var input = document.getElementById("password");
+input.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        document.getElementById("check").click();
+    }
+});
+</script>
+
 </body>
 </html>
