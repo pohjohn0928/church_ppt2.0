@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from Helpers.datahelper import ReadPdfFile, MakePPT
 from Helpers.docx import Word
 from Helpers.email import Gmail
@@ -17,25 +17,22 @@ app.config['JSON_SORT_KEYS'] = False
 def home():
     return render_template("init.html")
 
+
 @app.route('/init', methods=["POST"])
 def init():
     account = request.values['account']
     password = request.values['password']
     if account == 'church_ppt' and password == 'churchchurch':
-        return 'good'
+        return render_template('index.html')
     else:
-        return 'error'
-
-@app.route('/makePPT')
-def makePPT():
-    return render_template("index.html")
-
+        return render_template("init.html", message='wrong account or password')
 
 
 @app.route('/bible_info', methods=["POST"])
 def bible_info():
     bible = bible_config.passage_data
     return bible
+
 
 @app.route('/getPdfFile', methods=["POST"])
 def getPdfFile():
@@ -56,7 +53,6 @@ def getPdfFile():
     annocement = json.loads(annocement)["annocement"]
     receivers = json.loads(receivers)["receivers"]
 
-
     readPdfFile = ReadPdfFile()
     chineseScrpitureReading = readPdfFile.getChieseScripture(sr_info)
     chineseScrpitureInSermon = readPdfFile.getChieseScripture(sis_info)
@@ -70,7 +66,6 @@ def getPdfFile():
     while d.weekday() != 6:
         d += datetime.timedelta(1)
     date = d
-
 
     data = {"annocement": annocement, "englishScrpitureReading": englishScrpitureReading,
             "chineseScrpitureReading": chineseScrpitureReading, "englishScrpitureInSermon": englishScrpitureInSermon,
@@ -111,5 +106,6 @@ def getPdfFile():
         # Done
         return f"PPT Path : {os.path.dirname(__file__)}"
 
+
 if __name__ == '__main__':
-    app.run(host = '0.0.0.0',port = 80,debug=False)
+    app.run(host='0.0.0.0', port=80, debug=False)
