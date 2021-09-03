@@ -81,7 +81,20 @@
                     else{
                         swal("Finish", result, "success").then(() =>
                         {
-                            location.reload()
+                            var form = document.createElement("form");
+                            var reload = document.createElement("input");
+
+                            form.method = "POST";
+                            form.action = "/init";
+
+                            reload.value=1;
+                            reload.name="reload";
+
+                            form.appendChild(reload);
+                            document.body.appendChild(form);
+
+                            form.submit();
+                            document.body.removeChild(form);
                         })
                     }
                 }

@@ -18,14 +18,19 @@ def home():
     return render_template("init.html")
 
 
-@app.route('/init', methods=["POST"])
+@app.route('/init', methods=["POST", "GET"])
 def init():
-    account = request.values['account']
-    password = request.values['password']
-    if account == 'church_ppt' and password == 'churchchurch':
-        return render_template('index.html')
-    else:
-        return render_template("init.html", message='wrong account or password')
+	if request.method == "POST":
+	    try:
+	        return render_template('index.html')
+	    except:
+	        account = request.values['account']
+	        password = request.values['password']
+	        if account == 'church_ppt' and password == 'churchchurch':
+	            return render_template('index.html')
+	        else:
+	            return render_template("init.html", message='wrong account or password')
+
 
 
 @app.route('/bible_info', methods=["POST"])
