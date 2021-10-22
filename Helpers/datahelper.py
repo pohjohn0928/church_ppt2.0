@@ -1,17 +1,18 @@
 import os
 from pptx import Presentation
-from pptx.util import Inches, Pt,Cm
+from pptx.util import Inches, Pt, Cm
 from pptx.dml.color import RGBColor
 import requests
 from bs4 import BeautifulSoup
 import time
 import threading
 
+
 class ReadPdfFile:
     def __init__(self):
         self.root = os.path.dirname(__file__)
 
-    def getChieseScripture(self,scriptures):
+    def getChieseScripture(self, scriptures):
         if scriptures == []:
             return []
         else:
@@ -24,10 +25,10 @@ class ReadPdfFile:
                 return_scripture.append(i + ' ' + j)
             return return_scripture
 
-    def getClosingSong(self,closingSongName):
-        path = os.path.join(self.root,f'closingSong/{closingSongName}.txt')
+    def getClosingSong(self, closingSongName):
+        path = os.path.join(self.root, f'closingSong/{closingSongName}.txt')
         try:
-            file = open(path,encoding='utf-8')
+            file = open(path, encoding='utf-8')
             lyrics = ""
             for f in file:
                 lyrics += f
@@ -35,7 +36,7 @@ class ReadPdfFile:
             closingSong_english = lyrics.split('(English)')[1].split('\n')
             del closingSong_chinese[-1]
             del closingSong_english[0]
-            closingSong = {"closingSong_chinese":closingSong_chinese,"closingSong_english" : closingSong_english}
+            closingSong = {"closingSong_chinese": closingSong_chinese, "closingSong_english": closingSong_english}
             return closingSong
         except:
             print("Can't find out the closingSongName !")
@@ -45,8 +46,9 @@ class ReadPdfFile:
         file = open(path)
         blessing_song = []
         for lyrics in file:
-            blessing_song.append(lyrics.replace('\n',''))
+            blessing_song.append(lyrics.replace('\n', ''))
         return blessing_song
+
 
 class BibleApi:
     def __init__(self):
@@ -65,32 +67,30 @@ class BibleApi:
 
     def english_to_chinese(self):
         self.english_chinese_dic = {}
-        file = open(self.englishToChinese,encoding='utf-8')
+        file = open(self.englishToChinese, encoding='utf-8')
         for scripture in file:
-            self.english_chinese_dic[scripture.split(' ')[0]] = scripture.split(' ')[1].replace('\n','')
+            self.english_chinese_dic[scripture.split(' ')[0]] = scripture.split(' ')[1].replace('\n', '')
 
-
-    def getEnglishVerse(self,bibleVersion,book,chapter,startVerse,endVerse):
+    def getEnglishVerse(self, bibleVersion, book, chapter, startVerse, endVerse):
         startVerse = int(startVerse)
         endVerse = int(endVerse)
         return_verses = []
-        book = book.replace(' ','-')
+        book = book.replace(' ', '-')
         url = f"https://www.biblestudytools.com/{bibleVersion}/{book}/{chapter}.html"
         response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
 
-        for i in range(startVerse,endVerse + 1):
-            result = soup.find("span",class_=f"verse-{i}")
+        for i in range(startVerse, endVerse + 1):
+            result = soup.find("span", class_=f"verse-{i}")
             try:
-                while(1):
+                while (1):
                     result.a.decompose()
             except:
                 pass
             return_verses.append(f"<sv>{i} {result.text.strip()}")
         return return_verses
 
-
-    def getChineseVerse(self,book,chapter,startVerse,endVerse):
+    def getChineseVerse(self, book, chapter, startVerse, endVerse):
         url = self.chineseVerseBaseUrl + f"{book}/{chapter}:{startVerse}-{endVerse}"
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
@@ -100,25 +100,24 @@ class BibleApi:
 
         return return_verses
 
-
     def setBibleVersion(self):
         self.bibleVersionDic = {}
         file = open(self.bibleVersion)
         for bibleVersion in file:
-            self.bibleVersionDic[bibleVersion.replace("\n","").split(",")[0]] = bibleVersion.replace("\n","").split(",")[1]
+            self.bibleVersionDic[bibleVersion.replace("\n", "").split(",")[0]] = \
+            bibleVersion.replace("\n", "").split(",")[1]
 
     def setEnglishBook(self):
         self.englishBookDic = {}
         file = open(self.englishBook)
         for book in file:
-            self.englishBookDic[book.replace("\n","").split(" ",2)[2]] = book.replace("\n","").split(" ",2)[1]
-
+            self.englishBookDic[book.replace("\n", "").split(" ", 2)[2]] = book.replace("\n", "").split(" ", 2)[1]
 
     def setChineseBook(self):
         self.chineseBookDic = {}
-        file = open(self.chineseBook,"r",encoding="utf-8")
+        file = open(self.chineseBook, "r", encoding="utf-8")
         for book in file:
-            self.chineseBookDic[book.replace("\n","").split(" ")[1]] = book.replace("\n","").split(" ")[0]
+            self.chineseBookDic[book.replace("\n", "").split(" ")[1]] = book.replace("\n", "").split(" ")[0]
 
 
 class MakePPT(threading.Thread):
@@ -128,10 +127,13 @@ class MakePPT(threading.Thread):
         self.prs.slide_width = Inches(16)
         self.prs.slide_height = Inches(9)
         self.data = data
-        self.word_limit = 69
-        self.word_limit_chinese = 155
+        self.word_limit = 45
+        self.word_limit_chinese = 110
+        self.chinese_verse_font_size = 70
+        self.english_verse_font_size = 60
         self.layout = self.prs.slide_layouts[6]
         self.start_verse_token = "<sv>"
+        self.line_space = 100
 
     def run(self):
         self.insertScriptureData()
@@ -145,9 +147,9 @@ class MakePPT(threading.Thread):
         self.addCalvaryImg()
         self.addAnnocement()
         self.representAtPPTScrpitureReading(englishScrpitureReading)
-        self.representAtPPTScrpitureReading(chineseScrpitureReading,'chinese')
+        self.representAtPPTScrpitureReading(chineseScrpitureReading, 'chinese')
         self.addCalvaryImg()
-        self.representAtPPTScrpitureInSermon(englishScrpitureInSermon,chineseScrpitureInSermon)
+        self.representAtPPTScrpitureInSermon(englishScrpitureInSermon, chineseScrpitureInSermon)
         self.addCalvaryImg()
         self.addClosingSong()
         self.addCalvaryImg()
@@ -156,7 +158,6 @@ class MakePPT(threading.Thread):
         self.prs.save(f'churchPPT{self.data["date"]}.pptx')
         end = time.time()
         print("Make PPT cost：%f sec" % (end - start))
-
 
     def addAnnocement(self):
         if self.data['annocement'] == []:
@@ -172,7 +173,7 @@ class MakePPT(threading.Thread):
                 slide.shapes.add_picture(img_path, left, top, height=height)
             self.addCalvaryImg()
 
-    def representAtPPTScrpitureReading(self,info,language = 'english'):
+    def representAtPPTScrpitureReading(self, info, language='english'):
         if language == 'english':
             ScrpitureInSermon_title_slide_layout = self.prs.slide_layouts[0]
             slide = self.prs.slides.add_slide(ScrpitureInSermon_title_slide_layout)
@@ -185,22 +186,22 @@ class MakePPT(threading.Thread):
             for index in range(len(info["verses"])):
                 scripture = info["verses"][index]
                 bibleVersion = info["bibleVersion"][index]
-                verses = self.getEnglishBibleVerses(scripture,bibleVersion)
+                verses = self.getEnglishBibleVerses(scripture, bibleVersion)
                 if bibleVersion != 'NKJV' and bibleVersion != 'nkjv':
                     scripture += ' ' + f"({bibleVersion})"
-                self.addPage(scripture,verses)
+                self.addPage(scripture, verses)
         else:
             for scripture in info:
                 verses = self.getChineseBibleVerses(scripture)
-                self.addPage(scripture,verses,'chinese')
+                self.addPage(scripture, verses, 'chinese')
 
-    def representAtPPTScrpitureInSermon(self,englishScrpitureInSermon,chineseScrpitureInSermon):
+    def representAtPPTScrpitureInSermon(self, englishScrpitureInSermon, chineseScrpitureInSermon):
         englishVerses = []
         chineseVerses = []
         for index in range(len(englishScrpitureInSermon["verses"])):
             scripture = englishScrpitureInSermon["verses"][index]
             bibleVersion = englishScrpitureInSermon["bibleVersion"][index]
-            verses = self.getEnglishBibleVerses(scripture,bibleVersion)
+            verses = self.getEnglishBibleVerses(scripture, bibleVersion)
             if verses == None:
                 verses = ["None"]
             englishVerses.append(verses)
@@ -224,43 +225,39 @@ class MakePPT(threading.Thread):
             slide = self.prs.slides.add_slide(self.layout)
             tf = self.initTxBox(slide)
             chapter = englishScrpitureInSermon["verses"][i]
-            if englishScrpitureInSermon['bibleVersion'][i] != 'NKJV' and englishScrpitureInSermon['bibleVersion'][i] != 'nkjv':
+            if englishScrpitureInSermon['bibleVersion'][i] != 'NKJV' and englishScrpitureInSermon['bibleVersion'][
+                i] != 'nkjv':
                 chapter += ' ' + f"({englishScrpitureInSermon['bibleVersion'][i]})"
-            self.setChapter(tf,chapter)
+            self.setChapter(tf, chapter)
             pageContent = self.seperateVerse(englishVerses[i])
             p = tf.add_paragraph()
-            run = p.add_run()
+            p.line_spacing = Pt(self.line_space)
             if len(pageContent) == 1:
-                self.represent_verse_in_ppt(pageContent[0],p)
+                self.represent_verse_in_ppt(pageContent[0], p)
             else:
                 for index in range(len(pageContent)):
                     if index == 0:
-                        self.represent_verse_in_ppt(pageContent[0],p)
+                        self.represent_verse_in_ppt(pageContent[0], p)
                     else:
                         self.addNewPageToFinishTheRest(pageContent[index])
-            font = run.font
-            font.size = Pt(54)
 
             slide = self.prs.slides.add_slide(self.layout)
             tf = self.initTxBox(slide)
-            self.setChapter(tf,chineseScrpitureInSermon[i],'chinese')
-            pageContent = self.seperateVerse(chineseVerses[i],'chinese')
+            self.setChapter(tf, chineseScrpitureInSermon[i], 'chinese')
+            pageContent = self.seperateVerse(chineseVerses[i], 'chinese')
             p = tf.add_paragraph()
-            run = p.add_run()
+            p.line_spacing = Pt(self.line_space)
             if len(pageContent) == 1:
-                self.represent_verse_in_ppt(pageContent[0],p,'chinese')
+                self.represent_verse_in_ppt(pageContent[0], p, 'chinese')
             else:
                 for index in range(len(pageContent)):
                     if index == 0:
                         self.represent_verse_in_ppt(pageContent[0], p, 'chinese')
                         content = pageContent[0].split(self.start_verse_token)
                     else:
-                        self.addNewPageToFinishTheRest(pageContent[index],'chinese')
-            font = run.font
-            font.name = '微軟正黑體'
-            font.size = Pt(54)
+                        self.addNewPageToFinishTheRest(pageContent[index], 'chinese')
 
-    def initTxBox(self,slide):
+    def initTxBox(self, slide):
         left = top = Inches(0.3)  # 位置
         width = Inches(15)  # 大小
         height = Inches(8)
@@ -269,7 +266,7 @@ class MakePPT(threading.Thread):
         tf.word_wrap = True
         return tf
 
-    def setChapter(self,tf,info,language = 'english'):
+    def setChapter(self, tf, info, language='english'):
         p = tf.paragraphs[0]
         book = info.split(' ')[0]
         chapter = info.split(' ')[1].split(':')[0]
@@ -284,32 +281,33 @@ class MakePPT(threading.Thread):
         if start_verse == end_verse:
             info = f'{book} {chapter}:{start_verse} {version}'
 
-
         run = p.add_run()
         run.text = info
         font = run.font
-        font.size = Pt(54)
+        font.size = Pt(60)
         font.bold = True
         if language == 'chinese':
             font.name = '微軟正黑體'
+            font.size = Pt(70)
         font.color.rgb = RGBColor(255, 0, 0)
 
-    def addPage(self,scripture,verses,language = 'english'):
+    def addPage(self, scripture, verses, language='english'):
         slide = self.prs.slides.add_slide(self.layout)
         tf = self.initTxBox(slide)
-        self.setChapter(tf,scripture,language)
+        self.setChapter(tf, scripture, language)
         p = tf.add_paragraph()
+        p.line_spacing = Pt(self.line_space)
 
         run = p.add_run()
-        pageContent = self.seperateVerse(verses,language)
+        pageContent = self.seperateVerse(verses, language)
         if len(pageContent) == 1:
             content = pageContent[0].split(self.start_verse_token)
             for c in content:
                 if c != '':
                     scr = c.split(" ")[0]
                     verse = " ".join(c.split(" ")[1:])
-                    self.show_content(scr,p,True,language)
-                    self.show_content(verse,p,False,language)
+                    self.show_content(scr, p, True, language)
+                    self.show_content(verse, p, False, language)
         else:
             for index in range(len(pageContent)):
                 if index == 0:
@@ -321,19 +319,20 @@ class MakePPT(threading.Thread):
                             self.show_content(scr, p, True, language)
                             self.show_content(verse, p, False, language)
                 else:
-                    self.addNewPageToFinishTheRest(pageContent[index],language)
+                    self.addNewPageToFinishTheRest(pageContent[index], language)
         font = run.font
 
         if language == 'chinese':
             font.name = '微軟正黑體'
-        font.size = Pt(54)
+            font.size = Pt(self.chinese_verse_font_size)
+        font.size = Pt(self.english_verse_font_size)
 
-
-    def addNewPageToFinishTheRest(self,content,language = 'english'):
+    def addNewPageToFinishTheRest(self, content, language='english'):
         slide = self.prs.slides.add_slide(self.layout)
         tf = self.initTxBox(slide)
 
         p = tf.paragraphs[0]
+        p.line_spacing = Pt(self.line_space)
         content = content.split(self.start_verse_token)
         if content[0] == '':
             for c in content:
@@ -344,13 +343,13 @@ class MakePPT(threading.Thread):
                     self.show_content(verse, p, False, language)
         else:
             self.show_content(content[0], p, False, language)
-            for index in range(1,len(content)):
+            for index in range(1, len(content)):
                 scr = content[index].split(" ")[0]
                 verse = " ".join(content[index].split(" ")[1:])
                 self.show_content(scr, p, True, language)
                 self.show_content(verse, p, False, language)
 
-    def seperateVerse(self,verses,language = 'english'):
+    def seperateVerse(self, verses, language='english'):
         contentEachPage = []
         i = 0
         block = ""
@@ -374,7 +373,7 @@ class MakePPT(threading.Thread):
         contentEachPage.append(block)
         return contentEachPage
 
-    def represent_verse_in_ppt(self,content,p,language = 'english'):
+    def represent_verse_in_ppt(self, content, p, language='english'):
         content = content.split(self.start_verse_token)
         if content[0] == '':
             for c in content:
@@ -384,20 +383,21 @@ class MakePPT(threading.Thread):
                     self.show_content(scr, p, True, language)
                     self.show_content(verse, p, False, language)
 
-    def set_superscript(self,font):
+    def set_superscript(self, font):
         font._element.set('baseline', '30000')
 
-    def show_content(self,content,p,superscript = False,language = 'english'):
+    def show_content(self, content, p, superscript=False, language='english'):
         run = p.add_run()
         run.text = content
         font = run.font
-        font.size = Pt(54)
+        font.size = Pt(self.english_verse_font_size)
         if language == 'chinese':
             font.name = '微軟正黑體'
+            font.size = Pt(self.chinese_verse_font_size)
         if superscript:
             self.set_superscript(font)
 
-    def getEnglishBibleVerses(self,scripture,bibleVersion):
+    def getEnglishBibleVerses(self, scripture, bibleVersion):
         bibleApi = BibleApi()
         englishBookDic = bibleApi.englishBookDic
         for key in englishBookDic.keys():
@@ -411,11 +411,11 @@ class MakePPT(threading.Thread):
                 if len(verses) != 1:
                     endVerse = scripture.split(" ")[-1].split(":")[1].split("-")[1]
         try:
-            return bibleApi.getEnglishVerse(bibleVersion,book,chapter,startVerse,endVerse)
+            return bibleApi.getEnglishVerse(bibleVersion, book, chapter, startVerse, endVerse)
         except:
             pass
 
-    def getChineseBibleVerses(self,info):
+    def getChineseBibleVerses(self, info):
         bibleApi = BibleApi()
         chineseBookDic = bibleApi.chineseBookDic
         for key in chineseBookDic.keys():
@@ -427,7 +427,7 @@ class MakePPT(threading.Thread):
                 endVerse = startVerse
                 if len(verses) != 1:
                     endVerse = info.split(" ")[-1].split(":")[1].split("-")[1]
-        return bibleApi.getChineseVerse(book,chapter,startVerse,endVerse)
+        return bibleApi.getChineseVerse(book, chapter, startVerse, endVerse)
 
     def addClosingSong(self):
         closingSong_slide_layout = self.prs.slide_layouts[0]
@@ -448,17 +448,16 @@ class MakePPT(threading.Thread):
                     contentList.append(content)
                     content = ""
 
-
             contentList.append(content)
             for lyrics in contentList:
                 if lyrics != '':
-                    self.addNewPageToFinishTheRest(lyrics,'chinese')
+                    self.addNewPageToFinishTheRest(lyrics, 'chinese')
 
             content = ""
             contentList = []
             for index in range(len(closingSong["closingSong_english"])):
                 content += closingSong["closingSong_english"][index] + '\n'
-                if (index + 1) % 8 == 0:
+                if (index + 1) % 6 == 0:
                     contentList.append(content)
                     content = ""
 
@@ -468,7 +467,6 @@ class MakePPT(threading.Thread):
                     self.addNewPageToFinishTheRest(lyrics)
         except:
             pass
-
 
     def addBlessingSong(self):
         blessingSong_slide_layout = self.prs.slide_layouts[0]
@@ -483,7 +481,7 @@ class MakePPT(threading.Thread):
         contentInFirstPage = []
         contentInSecondPage = []
         for i in range(len(blessing_song)):
-            if i <= 6 :
+            if i <= 6:
                 contentInFirstPage.append(blessing_song[i])
             else:
                 contentInSecondPage.append(blessing_song[i])
@@ -506,7 +504,6 @@ class MakePPT(threading.Thread):
         font = run.font
         font.size = Pt(60)
 
-
     def addCalvaryImg(self):
         img_path = os.path.dirname(__file__) + '/Img/calvary.png'
         slide = self.prs.slides.add_slide(self.layout)
@@ -517,5 +514,4 @@ class MakePPT(threading.Thread):
         top = Inches(0)
         left = Inches(2)
         height = Inches(9)
-        slide.shapes.add_picture(img_path, left, top,height=height)
-
+        slide.shapes.add_picture(img_path, left, top, height=height)

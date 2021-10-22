@@ -14,8 +14,8 @@
 </style>
 
 
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<meta name="theme-color" content="hsl(60, 100%, 83%)">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script type="text/javascript">
 	function getSermonInfo(){
@@ -194,6 +194,7 @@
         <option value="The Old Rugged Cross - 古舊十架">The Old Rugged Cross - 古舊十架</option>
         <option value="Amazing Grace - 奇異恩典">Amazing Grace - 奇異恩典</option>
         <option value="Just As I AM - 照我本相">Just As I AM - 照我本相</option>
+        <option value="I Love You Lord 主我愛你">I Love You Lord 主我愛你</option>
         <option value="其他">others - 其他</option>
 
     </select><br>
@@ -203,6 +204,7 @@
     <input type="checkbox" value="thedifference0507@gmail.com" class="receiver_email"/>Daniel<br>
     <input type="checkbox" value="sue71615@hotmail.com" class="receiver_email"/>Jason<br>
     <input type="checkbox" value="kayeleetonacao@gmail.com" class="receiver_email"/>kaye<br>
+    <input type="checkbox" value="jennding@gmail.com" class="receiver_email"/>Jenn<br>
     <input type="checkbox" value="pohjohn0928@gmail.com" class="receiver_email"/>John<br>
     <input type="checkbox" value="pohjohn0928@yahoo.com" class="receiver_email"/>John2<br><br>
     <button type="submit" class="btn btn-primary" onclick="getSermonInfo();" style="font-size: 24px; background-color: #4CAF50;border-radius: 12px;" >Done</button>
@@ -359,14 +361,6 @@
         }
         $(`#sr_end_verse_${counter_sr}`).html(content);
     }
-
-
-
-
-
-
-
-
 
     function add_sis_block(){
         counter_sis += 1;

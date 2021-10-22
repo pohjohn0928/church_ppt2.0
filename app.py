@@ -5,7 +5,7 @@ from Helpers.email import Gmail
 import time
 from Helpers.Books import bible_config
 import datetime
-
+from time import gmtime, strftime
 import os
 import json
 
@@ -20,17 +20,20 @@ def home():
 
 @app.route('/init', methods=["POST", "GET"])
 def init():
-	if request.method == "POST":
-	    try:
-	        return render_template('index.html')
-	    except:
-	        account = request.values['account']
-	        password = request.values['password']
-	        if account == 'church_ppt' and password == 'churchchurch':
-	            return render_template('index.html')
-	        else:
-	            return render_template("init.html", message='wrong account or password')
-
+    ip_address = request.remote_addr
+    now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+    print(f'{now}')
+    print(f'ip: {ip_address}')
+    if request.method == "POST":
+        try:
+            return render_template('index.html')
+        except:
+            account = request.values['account']
+            password = request.values['password']
+            if account == 'church_ppt' and password == 'churchchurch':
+                return render_template('index.html')
+            else:
+                return render_template("init.html", message='wrong account or password')
 
 
 @app.route('/bible_info', methods=["POST"])
@@ -50,7 +53,6 @@ def getPdfFile():
     annocement = request.form.get('annocement')
     receivers = request.form.get('receivers')
 
-
     sr_info = json.loads(sr_info)["sr_info"]
     sr_version = json.loads(sr_version)["sr_version"]
     sis_info = json.loads(sis_info)["sis_info"]
@@ -61,8 +63,8 @@ def getPdfFile():
     readPdfFile = ReadPdfFile()
     chineseScrpitureReading = readPdfFile.getChieseScripture(sr_info)
     chineseScrpitureInSermon = readPdfFile.getChieseScripture(sis_info)
-    englishScrpitureReading = {"verses" : sr_info , "bibleVersion" : sr_version}
-    englishScrpitureInSermon = {"verses" : sis_info , "bibleVersion" : sis_version}
+    englishScrpitureReading = {"verses": sr_info, "bibleVersion": sr_version}
+    englishScrpitureInSermon = {"verses": sis_info, "bibleVersion": sis_version}
 
     closingSong = readPdfFile.getClosingSong(closingSongName)
     blessing_song = readPdfFile.getBlessingSong()
@@ -77,10 +79,10 @@ def getPdfFile():
             "chineseScrpitureInSermon": chineseScrpitureInSermon, "sermonTitle": sermonTitle, "date": date,
             "closingSongName": closingSongName, "closingSong": closingSong, "blessing_song": blessing_song}
 
-    print('englishScrpitureReading : ',englishScrpitureReading["verses"])
-    print('chineseScrpitureReading : ',chineseScrpitureReading)
-    print('englishScrpitureInSermon : ',englishScrpitureInSermon["verses"])
-    print('chineseScrpitureInSermon : ',chineseScrpitureInSermon)
+    print('englishScrpitureReading : ', englishScrpitureReading["verses"])
+    print('chineseScrpitureReading : ', chineseScrpitureReading)
+    print('englishScrpitureInSermon : ', englishScrpitureInSermon["verses"])
+    print('chineseScrpitureInSermon : ', chineseScrpitureInSermon)
 
     if len(englishScrpitureReading["verses"]) != len(chineseScrpitureReading):
         return 'Error'
@@ -90,9 +92,9 @@ def getPdfFile():
     else:
         start = time.time()
         threads = []
-        threads.append(MakePPT(data))   # make ppt
+        threads.append(MakePPT(data))  # make ppt
         threads[0].start()
-        threads.append(Word(data))      # make word
+        threads.append(Word(data))  # make word
         threads[-1].start()
 
         for t in threads:
@@ -110,6 +112,11 @@ def getPdfFile():
 
         # Done
         return f"PPT Path : {os.path.dirname(__file__)}"
+
+
+@app.route('/service-worker.js')
+def sw():
+    return app.send_static_file('service-worker.js')
 
 
 if __name__ == '__main__':

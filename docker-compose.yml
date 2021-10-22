@@ -5,4 +5,4 @@ services:
         ports:
             - "80:80"
         volumes:
-            - /Users/baitaixiang/Desktop/church_ppt2.0:/app
+            - C:\Users\taisiangbo\Desktop\test\church_ppt2.0:/app

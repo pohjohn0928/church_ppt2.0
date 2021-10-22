@@ -11,11 +11,19 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<!-- pwa-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="hsl(60, 100%, 83%)">
+<!--#009578-->
+<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+<link rel="apple-touch-icon" href="static/images/icons/icon-192x192.png">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Calvary</title>
 </head>
 <style>
     body {
@@ -26,12 +34,34 @@
         opacity: 1;
     }
 
+    .form_style{
+            position:fixed;
+            left:70%;
+            top:20%
+    }
+<!--    @media screen and (min-width: 768px){-->
+<!--        .form_style{-->
+<!--            position:fixed;-->
+<!--            left:70%;-->
+<!--            top:20%-->
+<!--        }-->
+<!--    }-->
+
+<!--    @media screen and (max-width: 768px){-->
+<!--        .form_style{-->
+<!--            position:fixed;-->
+<!--            left:50px;-->
+<!--            top:200px-->
+<!--        }-->
+<!--    }-->
+
 </style>
 
 <body>
+<script src="{{ url_for('static', filename='index.js') }}"></script>
 <center><h1>Church PowerPoint</h1></center>
 
-<div style="position:fixed; left:800px; top:250px">
+<div class="form_style">
     <form method="post" action="/init">
         <div class="form-group row">
             <span class="input-group-text">Account</span>
@@ -50,31 +80,6 @@
     </form>
 </div>
 
-
-<!--<div style="position:fixed; left:800px; top:250px">-->
-<!--    <form method="post" action="/init">-->
-
-<!--        <div class="form-group row">-->
-<!--            <div class="input-group-prepend">-->
-<!--                <span class="input-group-text">Account</span>-->
-<!--            </div>-->
-<!--            <input type="text" class="form-control" id="account" name="account">-->
-<!--        </div>-->
-
-<!--        <div class="form-group row">-->
-<!--            <div class="input-group-prepend">-->
-<!--                <span class="input-group-text">Password</span>-->
-<!--            </div>-->
-<!--            <input type="password" class="form-control" id="password" name="password">-->
-<!--        </div>-->
-
-<!--        <div class="form-group row">-->
-<!--            <button type="button" class="btn btn-secondary" onclick="confirm()" id="check">Submit</button>-->
-<!--        </div>-->
-
-<!--    </form>-->
-<!--</div>-->
-
 <script>
 var input = document.getElementById("password");
 input.addEventListener("keyup", function(event) {
@@ -83,6 +88,7 @@ input.addEventListener("keyup", function(event) {
         document.getElementById("check").click();
     }
 });
+
 
 
 </script>
