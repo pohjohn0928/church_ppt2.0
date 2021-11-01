@@ -9,6 +9,8 @@ import os
 class Gmail:
     def __init__(self):
         self.content = MIMEMultipart()
+        self.token = 'oaumeytzfyeklkbp'
+        self.sender = 'pohjohn0928@gmail.com'
         self.content["from"] = self.sender
         self.smtp = smtplib.SMTP(host="smtp.gmail.com", port="587")
         self.root = os.path.dirname(__file__)
