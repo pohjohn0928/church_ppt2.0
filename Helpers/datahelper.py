@@ -469,40 +469,47 @@ class MakePPT(threading.Thread):
             pass
 
     def addBlessingSong(self):
-        blessingSong_slide_layout = self.prs.slide_layouts[0]
-        slide = self.prs.slides.add_slide(blessingSong_slide_layout)
-        title = slide.shapes.title
-        title.text = "The Blessing Song"
-        title.width = Cm(40)
-        title.top = Inches(4)
-        title.text_frame.paragraphs[0].font.size = Pt(70)
-
-        blessing_song = self.data["blessing_song"]
-        contentInFirstPage = []
-        contentInSecondPage = []
-        for i in range(len(blessing_song)):
-            if i <= 6:
-                contentInFirstPage.append(blessing_song[i])
-            else:
-                contentInSecondPage.append(blessing_song[i])
-
-        slide = self.prs.slides.add_slide(self.layout)
-        tf = self.initTxBox(slide)
-        p = tf.paragraphs[0]
-        run = p.add_run()
-        for lyrics in contentInFirstPage:
-            run.text += lyrics + '\n'
-        font = run.font
-        font.size = Pt(60)
-
-        slide = self.prs.slides.add_slide(self.layout)
-        tf = self.initTxBox(slide)
-        p = tf.paragraphs[0]
-        run = p.add_run()
-        for lyrics in contentInSecondPage:
-            run.text += lyrics + '\n'
-        font = run.font
-        font.size = Pt(60)
+        top = Inches(0)
+        left = Inches(0)
+        height = Inches(9)
+        for i in range(1, 4):
+            img_path = os.path.dirname(__file__) + f'/blessingSong/blessing_song{i}.png'
+            slide = self.prs.slides.add_slide(self.layout)
+            slide.shapes.add_picture(img_path, left, top, height=height)
+        # blessingSong_slide_layout = self.prs.slide_layouts[0]
+        # slide = self.prs.slides.add_slide(blessingSong_slide_layout)
+        # title = slide.shapes.title
+        # title.text = "The Blessing Song"
+        # title.width = Cm(40)
+        # title.top = Inches(4)
+        # title.text_frame.paragraphs[0].font.size = Pt(70)
+        #
+        # blessing_song = self.data["blessing_song"]
+        # contentInFirstPage = []
+        # contentInSecondPage = []
+        # for i in range(len(blessing_song)):
+        #     if i <= 6:
+        #         contentInFirstPage.append(blessing_song[i])
+        #     else:
+        #         contentInSecondPage.append(blessing_song[i])
+        #
+        # slide = self.prs.slides.add_slide(self.layout)
+        # tf = self.initTxBox(slide)
+        # p = tf.paragraphs[0]
+        # run = p.add_run()
+        # for lyrics in contentInFirstPage:
+        #     run.text += lyrics + '\n'
+        # font = run.font
+        # font.size = Pt(60)
+        #
+        # slide = self.prs.slides.add_slide(self.layout)
+        # tf = self.initTxBox(slide)
+        # p = tf.paragraphs[0]
+        # run = p.add_run()
+        # for lyrics in contentInSecondPage:
+        #     run.text += lyrics + '\n'
+        # font = run.font
+        # font.size = Pt(60)
 
     def addCalvaryImg(self):
         img_path = os.path.dirname(__file__) + '/Img/calvary.png'
