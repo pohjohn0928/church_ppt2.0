@@ -81,20 +81,7 @@
                     else{
                         swal("Finish", result, "success").then(() =>
                         {
-                            var form = document.createElement("form");
-                            var reload = document.createElement("input");
-
-                            form.method = "POST";
-                            form.action = "/init";
-
-                            reload.value=1;
-                            reload.name="reload";
-
-                            form.appendChild(reload);
-                            document.body.appendChild(form);
-
-                            form.submit();
-                            document.body.removeChild(form);
+                            location.reload();
                         })
                     }
                 }
@@ -206,6 +193,7 @@
     <input type="checkbox" value="sue71615@hotmail.com" class="receiver_email"/>Jason<br>
     <input type="checkbox" value="kayeleetonacao@gmail.com" class="receiver_email"/>kaye<br>
     <input type="checkbox" value="jennding@gmail.com" class="receiver_email"/>Jenn<br>
+    <input type="checkbox" value="Dbsutton32@gmail.com" class="receiver_email"/>Dave<br>
     <input type="checkbox" value="pohjohn0928@gmail.com" class="receiver_email"/>John<br>
     <input type="checkbox" value="pohjohn0928@yahoo.com" class="receiver_email"/>John2<br><br>
     <button type="submit" class="btn btn-primary" onclick="getSermonInfo();" style="font-size: 24px; background-color: #4CAF50;border-radius: 12px;" >Done</button>

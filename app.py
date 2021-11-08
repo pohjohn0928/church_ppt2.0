@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template, redirect, url_for
+from docx import Document
+from flask import Flask, request, render_template, redirect, url_for, send_file, make_response
 from Helpers.datahelper import ReadPdfFile, MakePPT
 from Helpers.docx import Word
 from Helpers.email import Gmail
@@ -15,7 +16,11 @@ app.config['JSON_SORT_KEYS'] = False
 
 @app.route('/')
 def home():
-    return render_template("init.html")
+    resp = make_response(render_template('init.html'))
+    resp.delete_cookie('user')
+    resp.delete_cookie('account')
+    resp.delete_cookie('password')
+    return resp
 
 
 @app.route('/init', methods=["POST", "GET"])
@@ -25,15 +30,25 @@ def init():
     print(f'{now}')
     print(f'ip: {ip_address}')
     if request.method == "POST":
-        try:
-            return render_template('index.html')
-        except:
-            account = request.values['account']
-            password = request.values['password']
-            if account == 'church_ppt' and password == 'churchchurch':
-                return render_template('index.html')
-            else:
-                return render_template("init.html", message='wrong account or password')
+        account = request.values['account']
+        password = request.values['password']
+        if account == 'church_ppt' and password == 'churchchurch':
+            resp = make_response(render_template('index.html'))
+            resp.set_cookie('user', ip_address)
+            resp.set_cookie('account', 'church_ppt')
+            resp.set_cookie('password', 'churchchurch')
+            return resp
+        else:
+            return render_template("init.html", message='wrong account or password')
+    else:
+        account = request.cookies.get('account')
+        password = request.cookies.get('password')
+        if account == 'church_ppt' and password == 'churchchurch':
+            resp = make_response(render_template('index.html'))
+            resp.set_cookie('user', ip_address)
+            resp.set_cookie('account', 'church_ppt')
+            resp.set_cookie('password', 'churchchurch')
+            return resp
 
 
 @app.route('/bible_info', methods=["POST"])
@@ -119,5 +134,26 @@ def sw():
     return app.send_static_file('service-worker.js')
 
 
+@app.route('/scriptures')
+def scriptures():
+    return render_template('scriptures.html')
+
+
+@app.route('/scriptures_file')
+def scriptures_file():
+    document = Document("Scripture_In_Sermon.docx")
+    return_dict = {'scriptures': [], 'verses': []}
+    for i, p in enumerate(document.paragraphs):
+        if i == 0:
+            return_dict['date'] = p.text
+            continue
+        else:
+            if i % 2 == 1:
+                return_dict['scriptures'].append(p.text)
+            else:
+                return_dict['verses'].append(p.text)
+    return return_dict
+
+
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8000, debug=False)
+    app.run(host='0.0.0.0', port=8000, debug=False)
