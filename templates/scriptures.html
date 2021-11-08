@@ -24,7 +24,7 @@
         success: function (result) {
             content = `<h1 style="margin-top: 5%">${result.date}</h1><br>`
             result.scriptures.forEach(function (scripture, i) {
-                content += `<div style="color: red; font-size: 25px">${scripture}</div>`
+                content += `<div style="color: red; font-size: 25px"><b>${scripture}</b></div>`
                 content += `<div style="font-size: 20px">${result.verses[i]}</div>`
                 if((i + 1) % 2 == 0){
                     content += '<br>'
@@ -36,9 +36,8 @@
 </script>
 <style>
     body {
-        background-size: cover;
         background: url('/static/scripture.png') no-repeat fixed 80%;
-        opacity: 1;
+        background-size: cover;
     }
 
 </style>
