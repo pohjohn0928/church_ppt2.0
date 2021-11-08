@@ -35,45 +35,71 @@
     }
 
 
-
 </style>
 
 <body>
 <script src="{{ url_for('static', filename='index.js') }}"></script>
-<center><h1>Church PowerPoint</h1></center>
 
-
-
-<div class="form_style" style="margin-top: 5%">
-    <form method="post" action="/init" style="margin-left: 50%">
-        <div class="form-group col-lg-8">
-            <label for="account">Account</label>
-            <input type="text" class="form-control input-sm" id="account" name="account" required>
+<div class="container-fluid">
+    <center><h1 class="title">Church PowerPoint</h1></center>
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-5">
+            <form method="post" action="/init">
+                <div class="form-group">
+                    <label for="account">Account</label>
+                    <input type="text" class="form-control input-sm" id="account" name="account" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control input-sm" id="password" placeholder="Password"
+                           name="password"
+                           required>
+                </div>
+                <br>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-secondary">Submit</button>
+                    <a href="/scriptures" class="btn btn-info">scriptures</a>
+                </div>
+                <div class="form-group">
+                    <font color="red">{{ message }}</font>
+                </div>
+            </form>
         </div>
-        <div class="form-group col-lg-8">
-            <label for="password">Password</label>
-            <input type="password" class="form-control input-sm" id="password" placeholder="Password" name="password" required>
-        </div><br>
-        <div class="form-group col-lg-8">
-            <button type="submit" class="btn btn-secondary">Submit</button>
-            <a href="/scriptures" class="btn btn-info">scriptures</a>
-        </div>
-        <div class="form-group col-lg-8">
-            <font color="red">{{message}}</font>
-        </div>
-    </form>
-
+    </div>
 </div>
 
-<script>
-var input = document.getElementById("password");
-input.addEventListener("keyup", function(event) {
-    if (event.keyCode === 13) {
-        event.preventDefault();
-        document.getElementById("check").click();
-    }
-});
 
+{#<div class="form_style" style="margin-top: 5%">#}
+{#    <form method="post" action="/init" style="margin-left: 50%">#}
+{#        <div class="form-group col-lg-8">#}
+{#            <label for="account">Account</label>#}
+{#            <input type="text" class="form-control input-sm" id="account" name="account" required>#}
+{#        </div>#}
+{#        <div class="form-group col-lg-8">#}
+{#            <label for="password">Password</label>#}
+{#            <input type="password" class="form-control input-sm" id="password" placeholder="Password" name="password"#}
+{#                   required>#}
+{#        </div>#}
+{#        <br>#}
+{#        <div class="form-group col-lg-8">#}
+{#            <button type="submit" class="btn btn-secondary">Submit</button>#}
+{#            <a href="/scriptures" class="btn btn-info">scriptures</a>#}
+{#        </div>#}
+{#        <div class="form-group col-lg-8">#}
+{#            <font color="red">{{ message }}</font>#}
+{#        </div>#}
+{#    </form>#}
+{##}
+{#</div>#}
+
+<script>
+    var input = document.getElementById("password");
+    input.addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+            event.preventDefault();
+            document.getElementById("check").click();
+        }
+    });
 
 
 </script>
