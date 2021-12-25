@@ -60,7 +60,7 @@
             });
 
             var aj = $.ajax({
-                url : '/calvary/getPdfFile',
+                url : '/getPdfFile',
                 data :
                 {
                     sr_info : JSON.stringify({'sr_info' : sr_info}),
@@ -210,7 +210,8 @@
     total_sr_num = 0;
     total_sis_num = 0;
     var aj = $.ajax({
-        url : '/calvary/bible_info',
+        url : '' +
+            '/bible_info',
         type : 'post',
         data : {},
         success : function (result) {

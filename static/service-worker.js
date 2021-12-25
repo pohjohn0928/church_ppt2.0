@@ -1,6 +1,6 @@
 const cacheName = 'pwa';
 const filesToCache = [
-    '/calvary',
+    '/',
     '/static/images/icons/icon-192x192.png'
 ];
 

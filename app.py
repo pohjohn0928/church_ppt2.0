@@ -155,9 +155,10 @@ def sw():
 
 
 app = Flask(__name__)
-app.register_blueprint(calvary_ppt, url_prefix='/calvary')
+app.register_blueprint(calvary_ppt, url_prefix='/')
 app.config['JSON_SORT_KEYS'] = False
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=False)
+    app.run(host='0.0.0.0', port=80, debug=False)
+    # pyinstaller -w -F --add-data "templates:templates" --add-data "static:static" --add-data "Helpers:Helpers" app.py
