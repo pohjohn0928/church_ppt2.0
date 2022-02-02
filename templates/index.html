@@ -2,6 +2,7 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <style>
     body {
@@ -20,7 +21,14 @@
 <script type="text/javascript">
 	function getSermonInfo(){
         try{
-            swal("Good job!", "Please wait", "success");
+            swal({
+                title:"Please wait",
+                text:"Loading...",
+                icon: "/static/loading.gif",
+                buttons: false,
+                closeOnClickOutside: false,
+                timer: 120000,
+            });
             sermon_title = document.getElementById("sermon_title").value;
             closing_song = document.getElementById("closing_song").value;
             var sr_info = [];
@@ -79,7 +87,7 @@
                         swal("Error", '', "error")
                     }
                     else{
-                        swal("Finish", result, "success").then(() =>
+                        swal("Finish", 'Please check your email!', "success").then(() =>
                         {
                             location.reload();
                         })
@@ -111,24 +119,25 @@
 
 </script>
 <body>
+<a type="button" class="btn btn-info" href="edit_announcement.html" style="margin-left: 80%">Edit Announcement</a>
 <center><h1>Church PowerPoint</h1></center>
 <div style="width:800px; height:auto; float:left; display:inline;margin-left:200px">
-    <h2>Scripture Reading : </h2>
+    <h4>Scripture Reading : </h4>
     <div id='sr_block'>
         Amount : <input id="num_sr" required="required" type="number" min="0">
-        <button onclick="get_sr_boxes()">submit</button>
+        <button onclick="get_sr_boxes()" class="btn btn-primary">submit</button>
     </div>
-    <div id="scripture_reading"></div>
+    <div id="scripture_reading"></div><br>
 
-    <h2>Scripture In Sermon : </h2>
+    <h4>Scripture In Sermon : </h4>
     <div id='sis_block'>
         Amount : <input id="num_sis" required="required" type="number" min="0">
-        <button id='num_sis_btn' onclick="get_sis_boxes()">submit</button>
+        <button id='num_sis_btn' onclick="get_sis_boxes()" class="btn btn-primary">submit</button>
     </div>
-    <div id="scripture_in_sermon"></div>
+    <div id="scripture_in_sermon"></div><br>
 
 
-    <h2>Annocement : </h2>
+    <h4>Announcement : </h4>
     <input type="checkbox" value="Calvary Men’s Fellowship" class="annoncement_check"/>Calvary Men’s Fellowship<br>
     <input type="checkbox" value="Calvary Ladies Fellowship" class="annoncement_check"/>Calvary Ladies Fellowship<br>
     <input type="checkbox" value="Calvary Sisters’ Fellowship" class="annoncement_check"/>Calvary Sisters’
@@ -162,16 +171,16 @@
     <input type="checkbox" value="Thursday Night Bible Study with Stephen Cha Fellowship Hall"
            class="annoncement_check"/>Thursday Night Bible Study with Stephen Cha Fellowship Hall<br>
     <input type="checkbox" value="Calary Tithe Offering" class="annoncement_check"/>Calary Tithe Offering<br>
-    <button onclick="selectAll()">Select All</button><br>
-</div>
+    <button onclick="selectAll()" class="btn btn-primary">Select All</button><br>
+</div><br>
 
 <div style="width:300px; height:auto; float:left; display:inline">
-    <h2>Sermon Title : </h2>
+    <h4>Sermon Title : </h4>
     <textarea class="form-control" id="sermon_title" rows="10" cols="35"
               required="required"></textarea>
 
 
-    <h2>Closing Song : </h2>
+    <h4>Closing Song : </h4>
     <select id="closing_song">
         <option value="Great is Thy Faithfulness - 祢信實何廣大 Pinyin">Great is Thy Faithfulness - 祢信實何廣大</option>
         <option value="He LIves - 主活著pinyin">He LIves - 主活著pinyin</option>
@@ -185,9 +194,9 @@
         <option value="I Love You Lord 主我愛你">I Love You Lord 主我愛你</option>
         <option value="My Peace - 我的平安">My Peace - 我的平安</option>
         <option value="其他">others - 其他</option>
-    </select><br>
+    </select><br><br>
 
-    <h2>Receivers : </h2>
+    <h4>Receivers : </h4>
     <input type="checkbox" value="brianpjl@gmail.com" class="receiver_email"/>Brian<br>
     <input type="checkbox" value="thedifference0507@gmail.com" class="receiver_email"/>Daniel<br>
     <input type="checkbox" value="sue71615@hotmail.com" class="receiver_email"/>Jason<br>
@@ -196,7 +205,7 @@
     <input type="checkbox" value="Dbsutton32@gmail.com" class="receiver_email"/>Dave<br>
     <input type="checkbox" value="pohjohn0928@gmail.com" class="receiver_email"/>John<br>
     <input type="checkbox" value="pohjohn0928@yahoo.com" class="receiver_email"/>John2<br><br>
-    <button type="submit" class="btn btn-primary" onclick="getSermonInfo();" style="font-size: 24px; background-color: #4CAF50;border-radius: 12px;" >Done</button>
+    <button type="submit" class="btn btn-success" onclick="getSermonInfo();" style="font-size: 24px; border-radius: 12px;" >Done</button>
 
 </div>
 

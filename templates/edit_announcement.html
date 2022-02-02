@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<style>
+    body {
+        background-image: url('/static/background.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        opacity: 1;
+    }
+    #announcements{
+        margin-left: 5%;
+    }
+</style>
+<script>
+    var aj = $.ajax({
+                url : '/announcement_info',
+                data :
+                {},
+                type : 'get',
+                success : function (result) {
+                    content = "";
+                    for(i = 0; i < result.announcements.length; i++){
+                        img = result.announcements[i]
+                        content += `<br><h4>${i + 1}.</h4><br><image src="/static/annocement/${img}" style="width: 20%; height: 20%"></image><br> ${img}<br><input type="file" id="${i}" onchange="update_announcement_info(${i}, '${img}')"/><br><br><hr style="margin-left: -5%">`
+                    }
+                    document.getElementById('announcements').innerHTML = content;
+                }
+             })
+
+    function update_announcement_info(i, img){
+        data = new FormData();
+        data.append('file', $(`#${i}`)[0].files[0]);
+        data.append('name', img);
+        var aj = $.ajax({
+                url : '/announcement_info',
+                data : data,
+                type : 'PUT',
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                success : function (result) {
+                    swal("Finish", '', "success").then(() =>
+                    {
+                        location.reload();
+                    })
+                }
+             })
+    }
+</script>
+<a class="btn btn-success" style="margin-left: 90%" href="/init">Back</a>
+<span style="font-size: 50px; font-family: serif">Announcement: </span><br>
+<div id="announcements"></div>
+</body>
+</html>

@@ -1,3 +1,5 @@
+import glob
+
 from docx import Document
 from flask import Flask, request, render_template, redirect, url_for, send_file, make_response, Blueprint
 from Helpers.datahelper import ReadPdfFile, MakePPT
@@ -152,6 +154,33 @@ def scriptures_file():
 @calvary_ppt.route('/service-worker.js')
 def sw():
     return app.send_static_file('service-worker.js')
+
+
+@calvary_ppt.route('/edit_announcement.html')
+def edit_announcement():
+    account = request.cookies.get('account')
+    password = request.cookies.get('password')
+    if account == 'church_ppt' and password == 'churchchurch':
+        return render_template('edit_announcement.html')
+
+
+@calvary_ppt.route('/announcement_info')
+def get_announcement_info():
+    account = request.cookies.get('account')
+    password = request.cookies.get('password')
+    if account == 'church_ppt' and password == 'churchchurch':
+        os.chdir(os.path.dirname(__file__) + '/static/annocement')
+        result = glob.glob('*.png')
+        return {"announcements": result}
+    #imagefile = flask.request.files('imagefile', '')
+
+
+@calvary_ppt.route('/announcement_info', methods=["PUT"])
+def update_announcement_info():
+    file = request.files.get('file')
+    name = request.values.get('name')
+    file.save(f'{name}')
+    return "Done!"
 
 
 app = Flask(__name__)
