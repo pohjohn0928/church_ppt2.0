@@ -1,5 +1,7 @@
+import glob
+
 from docx import Document
-from flask import Flask, request, render_template, redirect, url_for, send_file, make_response
+from flask import Flask, request, render_template, redirect, url_for, send_file, make_response, Blueprint
 from Helpers.datahelper import ReadPdfFile, MakePPT
 from Helpers.docx import Word
 from Helpers.email import Gmail
@@ -10,11 +12,10 @@ from time import gmtime, strftime
 import os
 import json
 
-app = Flask(__name__)
-app.config['JSON_SORT_KEYS'] = False
+calvary_ppt = Blueprint('calvary_ppt', __name__)
 
 
-@app.route('/')
+@calvary_ppt.route('/')
 def home():
     resp = make_response(render_template('init.html'))
     resp.delete_cookie('user')
@@ -23,7 +24,7 @@ def home():
     return resp
 
 
-@app.route('/init', methods=["POST", "GET"])
+@calvary_ppt.route('/init', methods=["POST", "GET"])
 def init():
     ip_address = request.remote_addr
     now = strftime("%Y-%m-%d %H:%M:%S", gmtime())
@@ -51,13 +52,13 @@ def init():
             return resp
 
 
-@app.route('/bible_info', methods=["POST"])
+@calvary_ppt.route('/bible_info', methods=["POST"])
 def bible_info():
     bible = bible_config.passage_data
     return bible
 
 
-@app.route('/getPdfFile', methods=["POST"])
+@calvary_ppt.route('/getPdfFile', methods=["POST"])
 def getPdfFile():
     sermonTitle = request.values['sermon_title']
     closingSongName = request.values['closing_song']
@@ -129,17 +130,12 @@ def getPdfFile():
         return f"PPT Path : {os.path.dirname(__file__)}"
 
 
-@app.route('/service-worker.js')
-def sw():
-    return app.send_static_file('service-worker.js')
-
-
-@app.route('/scriptures')
+@calvary_ppt.route('/scriptures')
 def scriptures():
     return render_template('scriptures.html')
 
 
-@app.route('/scriptures_file')
+@calvary_ppt.route('/scriptures_file')
 def scriptures_file():
     document = Document("Scripture_In_Sermon.docx")
     return_dict = {'scriptures': [], 'verses': []}
@@ -155,5 +151,43 @@ def scriptures_file():
     return return_dict
 
 
+@calvary_ppt.route('/service-worker.js')
+def sw():
+    return app.send_static_file('service-worker.js')
+
+
+@calvary_ppt.route('/edit_announcement.html')
+def edit_announcement():
+    account = request.cookies.get('account')
+    password = request.cookies.get('password')
+    if account == 'church_ppt' and password == 'churchchurch':
+        return render_template('edit_announcement.html')
+
+
+@calvary_ppt.route('/announcement_info')
+def get_announcement_info():
+    account = request.cookies.get('account')
+    password = request.cookies.get('password')
+    if account == 'church_ppt' and password == 'churchchurch':
+        os.chdir(os.path.dirname(__file__) + '/static/annocement')
+        result = glob.glob('*.png')
+        return {"announcements": result}
+    #imagefile = flask.request.files('imagefile', '')
+
+
+@calvary_ppt.route('/announcement_info', methods=["PUT"])
+def update_announcement_info():
+    file = request.files.get('file')
+    name = request.values.get('name')
+    file.save(f'{name}')
+    return "Done!"
+
+
+app = Flask(__name__)
+app.register_blueprint(calvary_ppt, url_prefix='/')
+app.config['JSON_SORT_KEYS'] = False
+
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=False)
+    app.run(host='0.0.0.0', port=80, debug=False)
+    # pyinstaller -w -F --add-data "templates:templates" --add-data "static:static" --add-data "Helpers:Helpers" app.py

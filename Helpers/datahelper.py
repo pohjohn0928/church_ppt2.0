@@ -165,7 +165,7 @@ class MakePPT(threading.Thread):
 
         else:
             for annoce in self.data['annocement']:
-                img_path = os.path.dirname(__file__) + f'/annocement/{annoce}.png'
+                img_path = os.path.dirname(__file__) + f'/../static/annocement/{annoce}.png'
                 slide = self.prs.slides.add_slide(self.layout)
                 top = Inches(0)
                 left = Inches(0)

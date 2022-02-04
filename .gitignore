@@ -8,3 +8,6 @@ __pycache__/
 *.docx
 *.swp
 ngrok.exe
+app.spec
+build
+dist
