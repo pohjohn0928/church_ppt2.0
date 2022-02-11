@@ -155,7 +155,7 @@ class MakePPT(threading.Thread):
         self.addCalvaryImg()
         self.addBlessingSong()
         self.addCalvaryImg()
-        self.prs.save(f'churchPPT{self.data["date"]}.pptx')
+        self.prs.save(f'ppt/churchPPT{self.data["date"]}.pptx')
         end = time.time()
         print("Make PPT cost：%f sec" % (end - start))
 

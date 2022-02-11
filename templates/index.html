@@ -119,7 +119,8 @@
 
 </script>
 <body>
-<a type="button" class="btn btn-info" href="edit_announcement.html" style="margin-left: 80%">Edit Announcement</a>
+<a type="button" class="btn btn-info" href="edit_announcement.html" style="float: left">Edit Announcement</a>
+<a type="button" class="btn btn-info" href="worship_songs.html" style="float: left; margin-left: 5%">Worship Songs</a><br><br>
 <center><h1>Church PowerPoint</h1></center>
 <div style="width:800px; height:auto; float:left; display:inline;margin-left:200px">
     <h4>Scripture Reading : </h4>
@@ -138,39 +139,40 @@
 
 
     <h4>Announcement : </h4>
-    <input type="checkbox" value="Calvary Men’s Fellowship" class="annoncement_check"/>Calvary Men’s Fellowship<br>
-    <input type="checkbox" value="Calvary Ladies Fellowship" class="annoncement_check"/>Calvary Ladies Fellowship<br>
-    <input type="checkbox" value="Calvary Sisters’ Fellowship" class="annoncement_check"/>Calvary Sisters’
-    Fellowship<br>
-    <input type="checkbox" value="Calvary Youth Fellowship" class="annoncement_check"/>Calvary Youth Fellowship<br>
-    <input type="checkbox" value="Filipino Bible Study and Fellowship" class="annoncement_check"/>Filipino Bible Study
-    and Fellowship<br>
-    <input type="checkbox" value="Calvary Marriage Fellowship" class="annoncement_check"/>Calvary Marriage
-    Fellowship<br>
-    <input type="checkbox" value="Calvary Choir" class="annoncement_check"/>Calvary Choir<br>
-    <input type="checkbox" value="Calvary Children’s Sunday School" class="annoncement_check"/>Calvary Children’s Sunday
-    School<br>
-    <input type="checkbox" value="Calvary Multilingual Prayer Meeting" class="annoncement_check"/>Calvary Multilingual
-    Prayer Meeting<br>
-    <input type="checkbox" value="Calvary Sunday Chinese Bible Study" class="annoncement_check"/>Calvary Sunday Chinese
-    Bible Study<br>
-    <input type="checkbox" value="Calvary Sunday Morning English Bible Study" class="annoncement_check"/>Calvary Sunday
-    Morning English Bible Study<br>
-    <input type="checkbox" value="Calvary Wednesday Night Bible Study" class="annoncement_check"/>Calvary Wednesday
-    Night Bible Study<br>
-    <input type="checkbox" value="Calvary Worship Special Music" class="annoncement_check"/>Calvary Worship Special
-    Music<br>
-    <input type="checkbox" value="Calvary Church Library" class="annoncement_check"/>Calvary Church Library<br>
-    <input type="checkbox" value="Calvary Nursery" class="annoncement_check"/>Calvary Nursery<br>
-    <input type="checkbox" value="Calvary PowerPoint Audiovisual Ministry" class="annoncement_check"/>Calvary PowerPoint
-    Audiovisual Ministry<br>
-    <input type="checkbox" value="Calvary Ushers and Greeters Group" class="annoncement_check"/>Calvary Ushers and
-    Greeters Group<br>
-    <input type="checkbox" value="Questions about How to Give and Church Finances" class="annoncement_check"/>Questions
-    about How to Give and Church Finances<br>
-    <input type="checkbox" value="Thursday Night Bible Study with Stephen Cha Fellowship Hall"
-           class="annoncement_check"/>Thursday Night Bible Study with Stephen Cha Fellowship Hall<br>
-    <input type="checkbox" value="Calary Tithe Offering" class="annoncement_check"/>Calary Tithe Offering<br>
+{#    <input type="checkbox" value="Calvary Men’s Fellowship" class="annoncement_check"/>Calvary Men’s Fellowship<br>#}
+{#    <input type="checkbox" value="Calvary Ladies Fellowship" class="annoncement_check"/>Calvary Ladies Fellowship<br>#}
+{#    <input type="checkbox" value="Calvary Sisters’ Fellowship" class="annoncement_check"/>Calvary Sisters’#}
+{#    Fellowship<br>#}
+{#    <input type="checkbox" value="Calvary Youth Fellowship" class="annoncement_check"/>Calvary Youth Fellowship<br>#}
+{#    <input type="checkbox" value="Filipino Bible Study and Fellowship" class="annoncement_check"/>Filipino Bible Study#}
+{#    and Fellowship<br>#}
+{#    <input type="checkbox" value="Calvary Marriage Fellowship" class="annoncement_check"/>Calvary Marriage#}
+{#    Fellowship<br>#}
+{#    <input type="checkbox" value="Calvary Choir" class="annoncement_check"/>Calvary Choir<br>#}
+{#    <input type="checkbox" value="Calvary Children’s Sunday School" class="annoncement_check"/>Calvary Children’s Sunday#}
+{#    School<br>#}
+{#    <input type="checkbox" value="Calvary Multilingual Prayer Meeting" class="annoncement_check"/>Calvary Multilingual#}
+{#    Prayer Meeting<br>#}
+{#    <input type="checkbox" value="Calvary Sunday Chinese Bible Study" class="annoncement_check"/>Calvary Sunday Chinese#}
+{#    Bible Study<br>#}
+{#    <input type="checkbox" value="Calvary Sunday Morning English Bible Study" class="annoncement_check"/>Calvary Sunday#}
+{#    Morning English Bible Study<br>#}
+{#    <input type="checkbox" value="Calvary Wednesday Night Bible Study" class="annoncement_check"/>Calvary Wednesday#}
+{#    Night Bible Study<br>#}
+{#    <input type="checkbox" value="Calvary Worship Special Music" class="annoncement_check"/>Calvary Worship Special#}
+{#    Music<br>#}
+{#    <input type="checkbox" value="Calvary Church Library" class="annoncement_check"/>Calvary Church Library<br>#}
+{#    <input type="checkbox" value="Calvary Nursery" class="annoncement_check"/>Calvary Nursery<br>#}
+{#    <input type="checkbox" value="Calvary PowerPoint Audiovisual Ministry" class="annoncement_check"/>Calvary PowerPoint#}
+{#    Audiovisual Ministry<br>#}
+{#    <input type="checkbox" value="Calvary Ushers and Greeters Group" class="annoncement_check"/>Calvary Ushers and#}
+{#    Greeters Group<br>#}
+{#    <input type="checkbox" value="Questions about How to Give and Church Finances" class="annoncement_check"/>Questions#}
+{#    about How to Give and Church Finances<br>#}
+{#    <input type="checkbox" value="Thursday Night Bible Study with Stephen Cha Fellowship Hall"#}
+{#           class="annoncement_check"/>Thursday Night Bible Study with Stephen Cha Fellowship Hall<br>#}
+{#    <input type="checkbox" value="Calary Tithe Offering" class="annoncement_check"/>Calary Tithe Offering<br>#}
+    <div id="announcements"></div>
     <button onclick="selectAll()" class="btn btn-primary">Select All</button><br>
 </div><br>
 
@@ -227,6 +229,23 @@
             bible_info = result
         }
     })
+
+    var aj = $.ajax({
+        url : '' +
+            '/announcement_info',
+        type : 'get',
+        data : {},
+        success : function (result) {
+            content = "";
+            result.announcements.forEach(function(announcement){
+                announcement = announcement.replaceAll(".png","");
+                content += `<input type="checkbox" value="${announcement}" class="annoncement_check"/>${announcement}<br>`;
+            });
+            document.getElementById("announcements").innerHTML = content;
+        }
+    })
+
+
     function get_sr_boxes(){
         num_sr = document.getElementById('num_sr').value;
         if(num_sr <= 0){
