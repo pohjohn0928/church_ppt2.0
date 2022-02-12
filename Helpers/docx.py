@@ -1,8 +1,11 @@
+import os
+
 from docx import Document
 from docx.shared import Inches,Pt,RGBColor
 from Helpers.datahelper import MakePPT
 import time
 import threading
+
 
 class Word(threading.Thread):   #threading.Thread
     def __init__(self,data):
@@ -28,7 +31,7 @@ class Word(threading.Thread):   #threading.Thread
             scrpiture = self.scrpiture_detail(scrpiture)
             self.setTitle(scrpiture, 'chinese')
             self.setVerse(verse, 'chinese')
-        self.document.save('Scripture_In_Sermon.docx')
+        self.document.save(f'docx/Scripture_In_Sermon{self.data["date"]}.docx')
         end_time = time.time()
         print("Make docx cost：%f sec" % (end_time - self.start_time))
 

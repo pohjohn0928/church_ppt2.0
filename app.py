@@ -1,10 +1,14 @@
 import glob
 
+from PIL import Image
+
+
 from docx import Document
 from flask import Flask, request, render_template, redirect, url_for, send_file, make_response, Blueprint
 from Helpers.datahelper import ReadPdfFile, MakePPT
 from Helpers.docx import Word
 from Helpers.email import Gmail
+from Helpers.worship_song import make_send_worship_songs
 import time
 from Helpers.Books import bible_config
 import datetime
@@ -122,7 +126,7 @@ def getPdfFile():
         start = time.time()
         for receiver in receivers:
             gmail = Gmail()
-            gmail.send(receiver, f'Scripture for {data["date"]}', f'churchPPT{data["date"]}.pptx', data["sermonTitle"])
+            gmail.send(receiver, f'Scripture for {data["date"]}', f'ppt/churchPPT{data["date"]}.pptx', data["sermonTitle"], data["date"])
             end = time.time()
         print("Send Mail cost：%f sec" % (end - start))
 
@@ -137,7 +141,13 @@ def scriptures():
 
 @calvary_ppt.route('/scriptures_file')
 def scriptures_file():
-    document = Document("Scripture_In_Sermon.docx")
+    d = datetime.date.today()
+    while d.weekday() != 6:
+        d += datetime.timedelta(1)
+    date = d
+
+    root_path = "/".join(os.getcwd().split('/'))
+    document = Document(f"{root_path}/docx/Scripture_In_Sermon{date}.docx")
     return_dict = {'scriptures': [], 'verses': []}
     for i, p in enumerate(document.paragraphs):
         if i == 0:
@@ -169,18 +179,63 @@ def get_announcement_info():
     account = request.cookies.get('account')
     password = request.cookies.get('password')
     if account == 'church_ppt' and password == 'churchchurch':
-        os.chdir(os.path.dirname(__file__) + '/static/annocement')
+        os.chdir(os.path.dirname(__file__) + '/static/annocement/')
         result = glob.glob('*.png')
+        os.chdir(os.path.dirname(__file__))
         return {"announcements": result}
-    #imagefile = flask.request.files('imagefile', '')
 
 
 @calvary_ppt.route('/announcement_info', methods=["PUT"])
 def update_announcement_info():
     file = request.files.get('file')
     name = request.values.get('name')
-    file.save(f'{name}')
+    img = Image.open(file)
+    img.save('static/annocement/' + name)
     return "Done!"
+
+
+@calvary_ppt.route('/worship_songs.html')
+def worship_songs():
+    account = request.cookies.get('account')
+    password = request.cookies.get('password')
+    if account == 'church_ppt' and password == 'churchchurch':
+        return render_template('worship_songs.html')
+
+
+@calvary_ppt.route('/worship_song_set')
+def worship_song_set():
+    account = request.cookies.get('account')
+    password = request.cookies.get('password')
+    if account == 'church_ppt' and password == 'churchchurch':
+        os.chdir(os.path.dirname(__file__) + '/Helpers/worship_songs')
+        result = glob.glob('*.docx')
+        os.chdir(os.path.dirname(__file__))
+        return {"worship_songs": result}
+
+
+@calvary_ppt.route('/worship_song_lyrics/<song>')
+def worship_song_lyrics(song):
+    account = request.cookies.get('account')
+    password = request.cookies.get('password')
+    if account == 'church_ppt' and password == 'churchchurch':
+        document = Document(f'Helpers/worship_songs/{song}.docx')
+        lyrics = []
+        for i, p in enumerate(document.paragraphs):
+            lyrics.append(p.text)
+        return {"lyrics": lyrics}
+
+
+@calvary_ppt.route('/make_worship_song_file', methods=["POST"])
+def make_worship_song_file():
+    account = request.cookies.get('account')
+    password = request.cookies.get('password')
+    if account == 'church_ppt' and password == 'churchchurch':
+        worship_songs = request.form.get('worship_songs')
+        worship_songs = json.loads(worship_songs)["worship_songs"]
+        receivers = request.form.get('receivers')
+        receivers = json.loads(receivers)["receivers"]
+        make_send_worship_songs(worship_songs, receivers)
+        return "done"
 
 
 app = Flask(__name__)

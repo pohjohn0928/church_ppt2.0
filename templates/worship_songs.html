@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Worship Songs</title>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<style>
+    body {
+        background-image: url('/static/background.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        opacity: 1;
+    }
+
+</style>
+
+<script>
+     var aj = $.ajax({
+                url : '/worship_song_set',
+                data :
+                {},
+                type : 'get',
+                success : function (result) {
+                    content = "";
+                    result.worship_songs.forEach(function (song){
+                        song = song.replaceAll(".docx", "");
+                        content += `<input type="checkbox" value="${song}" class="worship_song_check"/><button class="btn btn-link" onclick='show_songs("${song}")'>${song}</button><br>`
+                    })
+                    document.getElementById("worship_songs").innerHTML = content;
+                }
+             })
+
+     function show_songs(song){
+         var aj = $.ajax({
+                url : `/worship_song_lyrics/${song}`,
+                data :
+                {},
+                type : 'get',
+                success : function (result) {
+                    content = `<button class="btn btn-outline-danger" onclick='window.location.reload();' style="margin-left: 90%">back</button><br>`;
+                    result.lyrics.forEach(function (lyr, i){
+                        if(i == 0){
+                            content += "<h4>" + lyr + "</h4>" + "<br>";
+                        }
+                        else {
+                            content += lyr + "<br>";
+                        }
+                    })
+                    document.getElementById("worship_song_page").innerHTML = content;
+                }
+             })
+     }
+
+
+     function send_file(){
+         var worship_songs = [];
+         $('.worship_song_check:checked').each(function () {
+             worship_songs.push($(this)[0].defaultValue)
+         });
+
+         var receivers = [];
+         $('.receiver_email:checked').each(function () {
+            receivers.push($(this)[0].defaultValue)
+         });
+
+         swal({
+                title:"Please wait",
+                text:"Loading...",
+                icon: "/static/loading.gif",
+                buttons: false,
+                closeOnClickOutside: false,
+                timer: 120000,
+            });
+
+         var aj = $.ajax({
+                url : '/make_worship_song_file',
+                data :
+                {
+                    worship_songs: JSON.stringify({'worship_songs':worship_songs}),
+                    receivers: JSON.stringify({'receivers':receivers}),
+                },
+                type : 'post',
+                success : function (result) {
+                   swal("Finish", 'Please check your email!', "success").then(() =>
+                    {
+                        location.reload();
+                    })
+                }
+             })
+     }
+</script>
+<body>
+<div id="worship_song_page" style="margin-left: 5%">
+    <a class="btn btn-success" style="margin-left: 90%" href="/init" id="back">Back</a>
+    <h2>Worship Songs: </h2>
+    <div id="worship_songs"></div>
+
+    <h4>Receivers : </h4>
+    <input type="checkbox" value="brianpjl@gmail.com" class="receiver_email"/>Brian<br>
+    <input type="checkbox" value="thedifference0507@gmail.com" class="receiver_email"/>Daniel<br>
+    <input type="checkbox" value="sue71615@hotmail.com" class="receiver_email"/>Jason<br>
+    <input type="checkbox" value="kayeleetonacao@gmail.com" class="receiver_email"/>kaye<br>
+    <input type="checkbox" value="jennding@gmail.com" class="receiver_email"/>Jenn<br>
+    <input type="checkbox" value="Dbsutton32@gmail.com" class="receiver_email"/>Dave<br>
+    <input type="checkbox" value="pohjohn0928@gmail.com" class="receiver_email"/>John<br>
+    <input type="checkbox" value="pohjohn0928@yahoo.com" class="receiver_email"/>John2<br><br>
+    <button type="submit" class="btn btn-success" onclick="send_file()" style="font-size: 20px; border-radius: 12px;" >Done</button>
+</div>
+</body>
+
+
+</html>
