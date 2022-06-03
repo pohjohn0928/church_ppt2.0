@@ -79,15 +79,16 @@ class BibleApi:
         return_verses = []
         book = book.replace(' ', '-')
         url = f"https://www.biblestudytools.com/{bibleVersion}/{book}/{chapter}.html"
-
         response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
 
         for i in range(startVerse, endVerse + 1):
             # result = soup.find("span", class_=f"verse-{i}")
             result = soup.find(attrs={"data-verse-id": i})
-
-            verse = result.text.strip()[1:].replace('\n', '').strip()
+            for i in range(len(result.findAll('a'))):
+                result.a.decompose()
+            verse = result.text.strip().replace('\n', '').strip()
+            verse = verse.replace(str(i), '', 1).strip()
             return_verses.append(f"<sv>{i} {verse}")
         return return_verses
 
