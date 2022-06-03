@@ -74,20 +74,21 @@ class BibleApi:
     def getEnglishVerse(self, bibleVersion, book, chapter, startVerse, endVerse):
         startVerse = int(startVerse)
         endVerse = int(endVerse)
+        bibleVersion = bibleVersion.lower()
+        book = book.lower()
         return_verses = []
         book = book.replace(' ', '-')
         url = f"https://www.biblestudytools.com/{bibleVersion}/{book}/{chapter}.html"
+
         response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
 
         for i in range(startVerse, endVerse + 1):
-            result = soup.find("span", class_=f"verse-{i}")
-            try:
-                while (1):
-                    result.a.decompose()
-            except:
-                pass
-            return_verses.append(f"<sv>{i} {result.text.strip()}")
+            # result = soup.find("span", class_=f"verse-{i}")
+            result = soup.find(attrs={"data-verse-id": i})
+
+            verse = result.text.strip()[1:].replace('\n', '').strip()
+            return_verses.append(f"<sv>{i} {verse}")
         return return_verses
 
     def getChineseVerse(self, book, chapter, startVerse, endVerse):
