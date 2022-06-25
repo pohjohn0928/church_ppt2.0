@@ -85,8 +85,10 @@ class BibleApi:
         for i in range(startVerse, endVerse + 1):
             # result = soup.find("span", class_=f"verse-{i}")
             result = soup.find(attrs={"data-verse-id": i})
-            for i in range(len(result.findAll('a'))):
+            for j in range(len(result.findAll('a'))):
                 result.a.decompose()
+            for k in range(len(result.findAll('h3'))):
+                result.h3.decompose()
             verse = result.text.strip().replace('\n', '').strip()
             verse = verse.replace(str(i), '', 1).strip()
             return_verses.append(f"<sv>{i} {verse}")

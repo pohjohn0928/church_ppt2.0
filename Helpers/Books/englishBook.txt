@@ -64,4 +64,3 @@
 63 3-John 3-John
 64 Jude Jude
 65 Revelation Revelation
-66 Psalm Psalm
