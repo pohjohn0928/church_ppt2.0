@@ -34,6 +34,8 @@ class Word(threading.Thread):   #threading.Thread
 
         base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         base = base.replace('\\', '/')
+        if not os.path.exists(f'{base}/docx'):
+            os.mkdir(f'{base}/docx')
         self.document.save(f'{base}/docx/Scripture_In_Sermon{self.data["date"]}.docx')
         end_time = time.time()
         print("Make docx cost：%f sec" % (end_time - self.start_time))

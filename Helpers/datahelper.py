@@ -161,6 +161,8 @@ class MakePPT(threading.Thread):
         self.addCalvaryImg()
         base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         base = base.replace('\\', '/')
+        if not os.path.exists(f'{base}/ppt'):
+            os.mkdir(f'{base}/ppt')
         self.prs.save(f'{base}/ppt/churchPPT{self.data["date"]}.pptx')
         end = time.time()
         print("Make PPT cost：%f sec" % (end - start))
