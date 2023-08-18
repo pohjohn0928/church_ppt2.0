@@ -179,8 +179,8 @@ def get_announcement_info():
     account = request.cookies.get('account')
     password = request.cookies.get('password')
     if account == 'church_ppt' and password == 'churchchurch':
-        os.chdir(os.path.dirname(__file__) + '/static/annocement/')
         print(os.path.dirname(__file__))
+        os.chdir(os.path.dirname(__file__) + '/static/annocement/')
         result = glob.glob('*.png')
         os.chdir(os.path.dirname(__file__))
         return {"announcements": result}
