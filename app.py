@@ -185,6 +185,7 @@ def get_announcement_info():
     if account == 'church_ppt' and password == 'churchchurch':
         base = os.path.dirname(__file__)
         result = get_file_by_pattern(f'{base}/static/annocement', 'png')
+        print(f'{base}/static/annocement')
         print(result)
         return {"announcements": result}
 
