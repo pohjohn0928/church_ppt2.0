@@ -31,7 +31,10 @@ class Word(threading.Thread):   #threading.Thread
             scrpiture = self.scrpiture_detail(scrpiture)
             self.setTitle(scrpiture, 'chinese')
             self.setVerse(verse, 'chinese')
-        self.document.save(f'docx/Scripture_In_Sermon{self.data["date"]}.docx')
+
+        base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        base = base.replace('\\', '/')
+        self.document.save(f'{base}/docx/Scripture_In_Sermon{self.data["date"]}.docx')
         end_time = time.time()
         print("Make docx cost：%f sec" % (end_time - self.start_time))
 

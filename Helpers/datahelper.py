@@ -159,7 +159,9 @@ class MakePPT(threading.Thread):
         self.addCalvaryImg()
         self.addBlessingSong()
         self.addCalvaryImg()
-        self.prs.save(f'ppt/churchPPT{self.data["date"]}.pptx')
+        base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        base = base.replace('\\', '/')
+        self.prs.save(f'{base}/ppt/churchPPT{self.data["date"]}.pptx')
         end = time.time()
         print("Make PPT cost：%f sec" % (end - start))
 

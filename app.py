@@ -16,6 +16,8 @@ from time import gmtime, strftime
 import os
 import json
 
+from test2 import get_file_by_pattern
+
 calvary_ppt = Blueprint('calvary_ppt', __name__)
 
 
@@ -126,7 +128,9 @@ def getPdfFile():
         start = time.time()
         for receiver in receivers:
             gmail = Gmail()
-            gmail.send(receiver, f'Scripture for {data["date"]}', f'ppt/churchPPT{data["date"]}.pptx', data["sermonTitle"], data["date"])
+            base = os.path.dirname(os.path.abspath(__file__))
+            base = base.replace('\\', '/')
+            gmail.send(receiver, f'Scripture for {data["date"]}', f'{base}/ppt/churchPPT{data["date"]}.pptx', data["sermonTitle"], data["date"])
             end = time.time()
         print("Send Mail cost：%f sec" % (end - start))
 
@@ -179,10 +183,8 @@ def get_announcement_info():
     account = request.cookies.get('account')
     password = request.cookies.get('password')
     if account == 'church_ppt' and password == 'churchchurch':
-        os.chdir(os.path.dirname(__file__) + '/static/annocement/')
-        result = glob.glob('*.png')
-        os.chdir(os.path.dirname(__file__))
-        print(result)
+        base = os.path.dirname(__file__)
+        result = get_file_by_pattern(f'{base}/static/annocement', 'png')
         return {"announcements": result}
 
 
@@ -208,9 +210,8 @@ def worship_song_set():
     account = request.cookies.get('account')
     password = request.cookies.get('password')
     if account == 'church_ppt' and password == 'churchchurch':
-        os.chdir(os.path.dirname(__file__) + '/Helpers/worship_songs')
-        result = glob.glob('*.docx')
-        os.chdir(os.path.dirname(__file__))
+        base = os.path.dirname(__file__)
+        result = get_file_by_pattern(f'{base}/Helpers/worship_songs', 'docx')
         return {"worship_songs": result}
 
 
@@ -245,5 +246,5 @@ app.config['JSON_SORT_KEYS'] = False
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=False)
+    app.run(host='0.0.0.0', port=66, debug=False)
     # pyinstaller -w -F --add-data "templates:templates" --add-data "static:static" --add-data "Helpers:Helpers" app.py

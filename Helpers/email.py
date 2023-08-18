@@ -20,7 +20,9 @@ class Gmail:
         self.content["subject"] = title
         self.content.attach(MIMEText(f'Sermon Title : {sermon_title}'))
         self.sendfile(file_path)
-        self.sendfile(f'docx/Scripture_In_Sermon{date}.docx')
+        base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        base = base.replace('\\', '/')
+        self.sendfile(f'{base}/docx/Scripture_In_Sermon{date}.docx')
         try:
             self.smtp.ehlo()  # 驗證SMTP伺服器
             self.smtp.starttls()  # 建立加密傳輸

@@ -1,14 +1,12 @@
 import os
 
 
-def get_fileNames(rootdir):
+def get_file_by_pattern(root_dir, pattern):
     fs = []
-    for root, dirs, files in os.walk(rootdir, topdown=True):
+    for root, dirs, files in os.walk(root_dir, topdown=True):
         for name in files:
             _, ending = os.path.splitext(name)
-            if ending == ".png":
-                fs.append(os.path.join(root, name))
+            if ending == f".{pattern}":
+                # fs.append(os.path.join(root, name))
+                fs.append(name)
     return fs
-
-
-print(get_fileNames('static/annocement'))
