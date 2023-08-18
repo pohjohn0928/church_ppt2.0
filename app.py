@@ -184,7 +184,6 @@ def get_announcement_info():
     password = request.cookies.get('password')
     if account == 'church_ppt' and password == 'churchchurch':
         base = os.path.dirname(os.path.abspath(__file__))
-        print(os.path.dirname(base))
         result = get_file_by_pattern(f'{base}/static/annocement', 'png')
         return {"announcements": result}
 
@@ -211,7 +210,7 @@ def worship_song_set():
     account = request.cookies.get('account')
     password = request.cookies.get('password')
     if account == 'church_ppt' and password == 'churchchurch':
-        base = os.path.dirname(__file__)
+        base = os.path.dirname(os.path.abspath(__file__))
         result = get_file_by_pattern(f'{base}/Helpers/worship_songs', 'docx')
         return {"worship_songs": result}
 
