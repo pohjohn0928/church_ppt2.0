@@ -2,7 +2,7 @@ import glob
 
 from PIL import Image
 
-
+from api.receiver import receiver
 from docx import Document
 from flask import Flask, request, render_template, redirect, url_for, send_file, make_response, Blueprint
 from Helpers.datahelper import ReadPdfFile, MakePPT
@@ -19,6 +19,7 @@ import json
 from test2 import get_file_by_pattern
 
 calvary_ppt = Blueprint('calvary_ppt', __name__)
+calvary_ppt.register_blueprint(receiver)
 
 
 @calvary_ppt.route('/')
